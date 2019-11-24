@@ -82,6 +82,11 @@ RandomX_ConfigurationLoki::RandomX_ConfigurationLoki()
 	RANDOMX_FREQ_CBRANCH = 16;
 }
 
+RandomX_ConfigurationV::RandomX_ConfigurationV()
+{
+	ArgonSalt = "RandomV\x03";
+}
+
 RandomX_ConfigurationArqma::RandomX_ConfigurationArqma()
 {
 	ArgonIterations = 1;
@@ -256,6 +261,7 @@ void RandomX_ConfigurationBase::Apply()
 }
 
 RandomX_ConfigurationMonero RandomX_MoneroConfig;
+RandomX_ConfigurationV RandomX_VConfig;
 RandomX_ConfigurationWownero RandomX_WowneroConfig;
 RandomX_ConfigurationLoki RandomX_LokiConfig;
 RandomX_ConfigurationArqma RandomX_ArqmaConfig;

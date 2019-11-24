@@ -66,6 +66,7 @@ xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
 
 #   ifdef XMRIG_ALGO_RANDOMX
     case RX_0:
+    case RX_V:
     case RX_WOW:
     case RX_LOKI:
     case DEFYX:

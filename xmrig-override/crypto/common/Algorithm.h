@@ -62,6 +62,7 @@ public:
         CN_HEAVY_XHV,  // "cn-heavy/xhv"     CryptoNight-Heavy (modified, Haven Protocol only).
         CN_PICO_0,     // "cn-pico"          CryptoNight Turtle (TRTL)
         RX_0,          // "rx/0"             RandomX (reference configuration).
+        RX_V,          // "rx/v"             RandomV (Monerov).
         RX_WOW,        // "rx/wow"           RandomWOW (Wownero).
         RX_LOKI,       // "rx/loki"          RandomXL (Loki).
         DEFYX,         // "defyx"            DefyX (Scala).
