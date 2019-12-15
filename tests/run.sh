@@ -28,6 +28,7 @@ node test_rx_arq.js
 node test_rx_defyx.js
 node test_rx_wow.js
 node test_rx_loki.js
+node test_rx_v.js
 node test_rx_switch.js
 node test_ar2_chukwa.js
 node test_ar2_wrkz.js
