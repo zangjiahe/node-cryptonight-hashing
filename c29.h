@@ -13,5 +13,7 @@ typedef struct siphash_keys__
 	uint64_t k3;
 } siphash_keys;
 
+enum verify_code { POW_OK, POW_HEADER_LENGTH, POW_TOO_BIG, POW_TOO_SMALL, POW_NON_MATCHING, POW_BRANCH, POW_DEAD_END, POW_SHORT_CYCLE};
+
 extern int c29s_verify(uint32_t edges[32], siphash_keys *keys);
 extern int c29v_verify(uint32_t edges[32], siphash_keys *keys);
