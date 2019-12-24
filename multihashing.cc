@@ -19,7 +19,12 @@
 
 extern "C" {
 #include "crypto/defyx/KangarooTwelve.h"
-} 
+}
+
+#include "c29/blake2.h"  
+#include "c29/portable_endian.h"    // for htole32/64
+#include "c29/int-util.h"
+#include "c29.h"
 
 #if (defined(__AES__) && (__AES__ == 1)) || (defined(__ARM_FEATURE_CRYPTO) && (__ARM_FEATURE_CRYPTO == 1))
   #define SOFT_AES false
@@ -361,229 +366,96 @@ NAN_METHOD(k12) {
     info.GetReturnValue().Set(returnValue);
 }
 
-/*
-
-class CCryptonightAsync : public Nan::AsyncWorker {
-
-    private:
-
-        const char* const m_input;
-        const uint32_t m_input_len;
-        const uint64_t m_height;
-        xmrig::cn_hash_fun m_fn;
-        char m_output[32];
-
-    public:
-
-        CCryptonightAsync(Nan::Callback* const callback, const char* const input, const uint32_t input_len, const int algo, const uint64_t height)
-            : Nan::AsyncWorker(callback), m_input(input), m_input_len(input_len), m_height(height), m_fn(get_cn_fn(algo)) {}
-
-        void Execute () {
-            m_fn(reinterpret_cast<const uint8_t*>(m_input), m_input_len, reinterpret_cast<uint8_t*>(m_output), &ctx, m_height);
-        }
-
-        void HandleOKCallback () {
-            Nan::HandleScope scope;
-
-            v8::Local<v8::Value> argv[] = {
-                Nan::Null(),
-                v8::Local<v8::Value>(Nan::CopyBuffer(m_output, 32).ToLocalChecked())
-            };
-            callback->Call(2, argv, async_resource);
-        }
-};
-
-NAN_METHOD(cryptonight_async) {
-    if (info.Length() < 2) return THROW_ERROR_EXCEPTION("You must provide at least two arguments.");
-
-    Local<Object> target = info[0]->ToObject();
-    if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
-
-    int algo = 0;
-    uint64_t height = 0;
-
-    int callback_arg_num = 1;
-    if (info.Length() >= 3) {
-        if (!info[1]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 2 should be a number");
-        algo = Nan::To<int>(info[1]).FromMaybe(0);
-        callback_arg_num = 2;
-    }
-    if (info.Length() >= 4) {
-        if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
-        height = Nan::To<unsigned int>(info[2]).FromMaybe(0);
-        callback_arg_num = 3;
-    }
-
-    if ((algo == xmrig::Algorithm::CN_WOW || algo == xmrig::Algorithm::CN_R) && (callback_arg_num < 3)) {
-        return THROW_ERROR_EXCEPTION("CryptonightR requires block template height as Argument 3");
-    }
-
-    Callback *callback = new Nan::Callback(info[callback_arg_num].As<v8::Function>());
-    Nan::AsyncQueueWorker(new CCryptonightAsync(callback, Buffer::Data(target), Buffer::Length(target), algo, height));
+static void setsipkeys(const char *keybuf,siphash_keys *keys) {
+	keys->k0 = htole64(((uint64_t *)keybuf)[0]);
+	keys->k1 = htole64(((uint64_t *)keybuf)[1]);
+	keys->k2 = htole64(((uint64_t *)keybuf)[2]);
+	keys->k3 = htole64(((uint64_t *)keybuf)[3]);
 }
 
-class CCryptonightLightAsync : public Nan::AsyncWorker {
-
-    private:
-
-        const char* const m_input;
-        const uint32_t m_input_len;
-        const uint64_t m_height;
-        xmrig::cn_hash_fun m_fn;
-        char m_output[32];
-
-    public:
-
-        CCryptonightLightAsync(Nan::Callback* const callback, const char* const input, const uint32_t input_len, const int algo, const uint64_t height)
-            : Nan::AsyncWorker(callback), m_input(input), m_input_len(input_len), m_height(height), m_fn(get_cn_lite_fn(algo)) {}
-
-        void Execute () {
-            m_fn(reinterpret_cast<const uint8_t*>(m_input), m_input_len, reinterpret_cast<uint8_t*>(m_output), &ctx, m_height);
-        }
-
-        void HandleOKCallback () {
-            Nan::HandleScope scope;
-
-            v8::Local<v8::Value> argv[] = {
-                Nan::Null(),
-                v8::Local<v8::Value>(Nan::CopyBuffer(m_output, 32).ToLocalChecked())
-            };
-            callback->Call(2, argv, async_resource);
-        }
-};
-
-NAN_METHOD(cryptonight_light_async) {
-    if (info.Length() < 2) return THROW_ERROR_EXCEPTION("You must provide at least two arguments.");
-
-    Local<Object> target = info[0]->ToObject();
-    if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
-
-    int algo = 0;
-    uint64_t height = 0;
-
-    int callback_arg_num = 1;
-    if (info.Length() >= 3) {
-        if (!info[1]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 2 should be a number");
-        algo = Nan::To<int>(info[1]).FromMaybe(0);
-        callback_arg_num = 2;
-    }
-    if (info.Length() >= 4) {
-        if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
-        algo = Nan::To<unsigned int>(info[2]).FromMaybe(0);
-        callback_arg_num = 3;
-    }
-
-    Callback *callback = new Nan::Callback(info[callback_arg_num].As<v8::Function>());
-    Nan::AsyncQueueWorker(new CCryptonightLightAsync(callback, Buffer::Data(target), Buffer::Length(target), algo, height));
+static void c29_setheader(const char *header, const uint32_t headerlen, siphash_keys *keys) {
+	char hdrkey[32];
+	blake2b((void *)hdrkey, sizeof(hdrkey), (const void *)header, headerlen, 0, 0);
+	setsipkeys(hdrkey,keys);
 }
 
-class CCryptonightHeavyAsync : public Nan::AsyncWorker {
+NAN_METHOD(c29s) {
+	if (info.Length() != 2) return THROW_ERROR_EXCEPTION("You must provide 2 arguments: header, ring");
+	
+	char * input = Buffer::Data(info[0]);
+	uint32_t input_len = Buffer::Length(info[0]);
 
-    private:
+	siphash_keys keys;
+	c29_setheader(input,input_len,&keys);
+	
+	Local<Array> ring = Local<Array>::Cast(info[1]);
 
-        const char* const m_input;
-        const uint32_t m_input_len;
-        const uint64_t m_height;
-        xmrig::cn_hash_fun m_fn;
-        char m_output[32];
+	uint32_t edges[PROOFSIZE];
+	for (uint32_t n = 0; n < PROOFSIZE; n++)
+		edges[n]=ring->Get(n)->Uint32Value(Nan::GetCurrentContext()).FromJust();
+	
+	int retval = c29s_verify(edges,&keys);
 
-    public:
-
-        CCryptonightHeavyAsync(Nan::Callback* const callback, const char* const input, const uint32_t input_len, const int algo, const uint64_t height)
-            : Nan::AsyncWorker(callback), m_input(input), m_input_len(input_len), m_height(height), m_fn(get_cn_heavy_fn(algo)) {}
-
-        void Execute () {
-            m_fn(reinterpret_cast<const uint8_t*>(m_input), m_input_len, reinterpret_cast<uint8_t*>(m_output), &ctx, m_height);
-        }
-
-        void HandleOKCallback () {
-            Nan::HandleScope scope;
-
-            v8::Local<v8::Value> argv[] = {
-                Nan::Null(),
-                v8::Local<v8::Value>(Nan::CopyBuffer(m_output, 32).ToLocalChecked())
-            };
-            callback->Call(2, argv, async_resource);
-        }
-};
-
-NAN_METHOD(cryptonight_heavy_async) {
-    if (info.Length() < 2) return THROW_ERROR_EXCEPTION("You must provide at least two arguments.");
-
-    Local<Object> target = info[0]->ToObject();
-    if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
-
-    int algo = 0;
-    uint64_t height = 0;
-
-    int callback_arg_num = 1;
-    if (info.Length() >= 3) {
-        if (!info[1]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 2 should be a number");
-        algo = Nan::To<int>(info[1]).FromMaybe(0);
-        callback_arg_num = 2;
-    }
-    if (info.Length() >= 4) {
-        if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
-        algo = Nan::To<unsigned int>(info[2]).FromMaybe(0);
-        callback_arg_num = 3;
-    }
-
-    Callback *callback = new Nan::Callback(info[callback_arg_num].As<v8::Function>());
-    Nan::AsyncQueueWorker(new CCryptonightHeavyAsync(callback, Buffer::Data(target), Buffer::Length(target), algo, height));
+	info.GetReturnValue().Set(Nan::New<Number>(retval));
 }
 
+NAN_METHOD(c29v) {
+	if (info.Length() != 2) return THROW_ERROR_EXCEPTION("You must provide 2 arguments: header, ring");
+	
+	char * input = Buffer::Data(info[0]);
+	uint32_t input_len = Buffer::Length(info[0]);
 
-class CCryptonightPicoAsync : public Nan::AsyncWorker {
+	siphash_keys keys;
+	c29_setheader(input,input_len,&keys);
 
-    private:
+	Local<Array> ring = Local<Array>::Cast(info[1]);
 
-        const char* const m_input;
-        const uint32_t m_input_len;
-        xmrig::cn_hash_fun m_fn;
-        char m_output[32];
+	uint32_t edges[PROOFSIZE];
+	for (uint32_t n = 0; n < PROOFSIZE; n++)
+		edges[n]=ring->Get(n)->Uint32Value(Nan::GetCurrentContext()).FromJust();
+	
+	int retval = c29v_verify(edges,&keys);
 
-    public:
-
-        CCryptonightPicoAsync(Nan::Callback* const callback, const char* const input, const uint32_t input_len, const int algo)
-            : Nan::AsyncWorker(callback), m_input(input), m_input_len(input_len), m_fn(get_cn_pico_fn(algo)) {}
-
-        void Execute () {
-            m_fn(reinterpret_cast<const uint8_t*>(m_input), m_input_len, reinterpret_cast<uint8_t*>(m_output), &ctx, 0);
-        }
-
-        void HandleOKCallback () {
-            Nan::HandleScope scope;
-
-            v8::Local<v8::Value> argv[] = {
-                Nan::Null(),
-                v8::Local<v8::Value>(Nan::CopyBuffer(m_output, 32).ToLocalChecked())
-            };
-            callback->Call(2, argv, async_resource);
-        }
-};
-
-NAN_METHOD(cryptonight_pico_async) {
-    if (info.Length() < 2) return THROW_ERROR_EXCEPTION("You must provide at least two arguments.");
-
-    Local<Object> target = info[0]->ToObject();
-    if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument should be a buffer object.");
-
-    int algo = 0;
-
-    int callback_arg_num;
-    if (info.Length() >= 3) {
-        if (!info[1]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 2 should be a number");
-        algo = Nan::To<int>(info[1]).FromMaybe(0);
-        callback_arg_num = 2;
-    } else {
-        callback_arg_num = 1;
-    }
-
-    Callback *callback = new Nan::Callback(info[callback_arg_num].As<v8::Function>());
-    Nan::AsyncQueueWorker(new CCryptonightPicoAsync(callback, Buffer::Data(target), Buffer::Length(target), algo));
+	info.GetReturnValue().Set(Nan::New<Number>(retval));
 }
 
-*/
+NAN_METHOD(c29_cycle_hash) {
+	if (info.Length() != 1) return THROW_ERROR_EXCEPTION("You must provide 1 argument:ring");
+	
+	Local<Array> ring = Local<Array>::Cast(info[0]);
+
+	uint8_t hashdata[116]; // PROOFSIZE*EDGEBITS/8
+	memset(hashdata, 0, 116);
+
+	int bytepos = 0;
+	int bitpos = 0;
+	for(int i = 0; i < PROOFSIZE; i++){
+
+		uint32_t node = ring->Get(i)->Uint32Value(Nan::GetCurrentContext()).FromJust();
+
+		for(int j = 0; j < EDGEBITS; j++) {
+			
+			if((node >> j) & 1U)
+				hashdata[bytepos] |= 1UL << bitpos;
+
+			bitpos++;
+			if(bitpos==8) {
+				bitpos=0;bytepos++;
+			}
+		}
+	}
+
+	unsigned char cyclehash[32];
+	blake2b((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata), 0, 0);
+	
+	unsigned char rev_cyclehash[32];
+	for(int i = 0; i < 32; i++)
+		rev_cyclehash[i] = cyclehash[31-i];
+	
+	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)rev_cyclehash, 32).ToLocalChecked();
+	info.GetReturnValue().Set(returnValue);
+}
+
 
 NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("cryptonight").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight)).ToLocalChecked());
@@ -593,11 +465,9 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("randomx").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(randomx)).ToLocalChecked());
     Nan::Set(target, Nan::New("argon2").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(argon2)).ToLocalChecked());
     Nan::Set(target, Nan::New("k12").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(k12)).ToLocalChecked());
-
-    //Nan::Set(target, Nan::New("cryptonight_async").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight_async)).ToLocalChecked());
-    //Nan::Set(target, Nan::New("cryptonight_light_async").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight_light_async)).ToLocalChecked());
-    //Nan::Set(target, Nan::New("cryptonight_heavy_async").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight_heavy_async)).ToLocalChecked());
-    //Nan::Set(target, Nan::New("cryptonight_pico_async").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight_pico_async)).ToLocalChecked());
+    Nan::Set(target, Nan::New("c29s").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cuckaroo29s)).ToLocalChecked());
+    Nan::Set(target, Nan::New("c29v").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cuckarood29v)).ToLocalChecked());
+    Nan::Set(target, Nan::New("c29_cycle_hash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cycle_hash)).ToLocalChecked());
 }
 
 NODE_MODULE(cryptonight, init)

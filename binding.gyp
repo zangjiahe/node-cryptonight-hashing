@@ -10,6 +10,8 @@
                 '<!@(uname -a | grep "x86_64" >/dev/null && echo "xmrig/crypto/cn/gpu/cn_gpu_ssse3.cpp" || echo)',
                 '<!@(uname -a | grep "x86_64" >/dev/null || echo "xmrig/crypto/cn/gpu/cn_gpu_arm.cpp" || echo)',
                 "multihashing.cc",
+                "c29s.cc",
+                "c29v.cc",
                 "xmrig/crypto/cn/c_blake256.c",
                 "xmrig/crypto/cn/c_groestl.c",
                 "xmrig/crypto/cn/c_jh.c",
