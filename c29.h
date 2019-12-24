@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 #define PROOFSIZE 32
 #define EDGEBITS 29
 
