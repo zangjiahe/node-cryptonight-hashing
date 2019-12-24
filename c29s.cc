@@ -2,8 +2,6 @@
 
 // Cuck(at)oo Cycle, a memory-hard proof-of-work
 // Copyright (c) 2013-2019 John Tromp
-#define PROOFSIZE 32
-#define EDGEBITS 29
 #define EDGE_BLOCK_BITS 6
 #define EDGE_BLOCK_SIZE (1 << EDGE_BLOCK_BITS)
 #define EDGE_BLOCK_MASK (EDGE_BLOCK_SIZE - 1)

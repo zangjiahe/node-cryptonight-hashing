@@ -1,3 +1,8 @@
+#pragma once
+
+#define PROOFSIZE 32
+#define EDGEBITS 29
+
 typedef struct siphash_keys__
 {
 	uint64_t k0;
