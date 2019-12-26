@@ -19,11 +19,11 @@
 
 extern "C" {
 #include "crypto/defyx/KangarooTwelve.h"
+#include "c29/blake2.h"  
+#include "c29/portable_endian.h" // for htole32/64
+#include "c29/int-util.h"
 }
 
-#include "c29/blake2.h"  
-#include "c29/portable_endian.h"    // for htole32/64
-#include "c29/int-util.h"
 #include "c29.h"
 
 #if (defined(__AES__) && (__AES__ == 1)) || (defined(__ARM_FEATURE_CRYPTO) && (__ARM_FEATURE_CRYPTO == 1))
