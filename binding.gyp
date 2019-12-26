@@ -12,7 +12,6 @@
                 "multihashing.cc",
                 "c29s.cc",
                 "c29v.cc",
-                "c29/blake2b-ref.c",
                 "xmrig/crypto/cn/c_blake256.c",
                 "xmrig/crypto/cn/c_groestl.c",
                 "xmrig/crypto/cn/c_jh.c",

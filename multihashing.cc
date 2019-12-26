@@ -19,7 +19,7 @@
 
 extern "C" {
 #include "crypto/defyx/KangarooTwelve.h"
-#include "c29/blake2.h"  
+#include "crypto/randomx/blake2/blake2.h"
 #include "c29/portable_endian.h" // for htole32/64
 #include "c29/int-util.h"
 }
@@ -375,7 +375,7 @@ static void setsipkeys(const char *keybuf,siphash_keys *keys) {
 
 static void c29_setheader(const char *header, const uint32_t headerlen, siphash_keys *keys) {
 	char hdrkey[32];
-	blake2b((void *)hdrkey, sizeof(hdrkey), (const void *)header, headerlen, 0, 0);
+	rx_blake2b((void *)hdrkey, sizeof(hdrkey), (const void *)header, headerlen, 0, 0);
 	setsipkeys(hdrkey,keys);
 }
 
@@ -446,7 +446,7 @@ NAN_METHOD(c29_cycle_hash) {
 	}
 
 	unsigned char cyclehash[32];
-	blake2b((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata), 0, 0);
+	rx_blake2b((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata), 0, 0);
 	
 	unsigned char rev_cyclehash[32];
 	for(int i = 0; i < 32; i++)
