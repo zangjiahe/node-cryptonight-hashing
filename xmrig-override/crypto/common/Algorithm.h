@@ -26,6 +26,8 @@
 #ifndef XMRIG_ALGORITHM_H
 #define XMRIG_ALGORITHM_H
 
+#include <stdint.h>
+
 
 #define XMRIG_ALGO_CN_GPU   1
 #define XMRIG_ALGO_CN_LITE  1
