@@ -14,6 +14,7 @@
 #include "crypto/common/VirtualMemory.h"
 #include "crypto/cn/CnCtx.h" 
 #include "crypto/cn/CnHash.h"
+#include "crypto/randomx/configuration.h"
 #include "crypto/randomx/randomx.h"
 #include "crypto/defyx/defyx.h"
 #include "crypto/astrobwt/AstroBWT.h"
