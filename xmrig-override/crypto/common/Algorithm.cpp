@@ -26,7 +26,6 @@
 
 #include "crypto/common/Algorithm.h"
 
-
 xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
 {
     switch (id) {
@@ -61,16 +60,17 @@ xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
 
 #   ifdef XMRIG_ALGO_CN_PICO
     case CN_PICO_0:
+    case CN_PICO_TLO:
         return CN_PICO;
 #   endif
 
 #   ifdef XMRIG_ALGO_RANDOMX
     case RX_0:
-    case RX_V:
     case RX_WOW:
     case RX_LOKI:
     case DEFYX:
     case RX_ARQ:
+    case RX_SFX:
         return RANDOM_X;
 #   endif
 
@@ -78,6 +78,11 @@ xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
     case AR2_CHUKWA:
     case AR2_WRKZ:
         return ARGON2;
+#   endif
+
+#   ifdef XMRIG_ALGO_ASTROBWT
+    case ASTROBWT_DERO:
+        return ASTROBWT;
 #   endif
 
     default:

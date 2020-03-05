@@ -16,6 +16,7 @@
 #include "crypto/cn/CnHash.h"
 #include "crypto/randomx/randomx.h"
 #include "crypto/defyx/defyx.h"
+#include "crypto/astrobwt/AstroBWT.h"
 
 extern "C" {
 #include "crypto/defyx/KangarooTwelve.h"
@@ -52,7 +53,7 @@ extern "C" {
   #define FNA(algo) xmrig::CnHash::fn(xmrig::Algorithm::algo, SOFT_AES ? xmrig::CnHash::AV_SINGLE_SOFT : xmrig::CnHash::AV_SINGLE, xmrig::Assembly::NONE)
 #endif
 
-const size_t max_mem_size = 4 * 1024 * 1024;
+const size_t max_mem_size = 20 * 1024 * 1024;
 xmrig::VirtualMemory mem(max_mem_size, true, false, 0, 4096);
 static struct cryptonight_ctx* ctx = nullptr;
 static randomx_cache* rx_cache[xmrig::Algorithm::Id::MAX] = {nullptr};
@@ -220,6 +221,13 @@ static xmrig::cn_hash_fun get_argon2_fn(const int algo) {
   }
 }
 
+static xmrig::cn_hash_fun get_astrobwt_fn(const int algo) {
+  switch (algo) {
+    case 0:  return FN(ASTROBWT_DERO);
+    default: return FN(ASTROBWT_DERO);
+  }
+}
+
 NAN_METHOD(cryptonight) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
@@ -353,6 +361,28 @@ NAN_METHOD(argon2) {
     info.GetReturnValue().Set(returnValue);
 }
 
+NAN_METHOD(astrobwt) {
+    if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
+
+    Local<Object> target = info[0]->ToObject();
+    if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
+
+    int algo = 0;
+
+    if (info.Length() >= 2) {
+        if (!info[1]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 2 should be a number");
+        algo = Nan::To<int>(info[1]).FromMaybe(0);
+    }
+
+    const xmrig::cn_hash_fun fn = get_astrobwt_fn(algo);
+
+    char output[32];
+    fn(reinterpret_cast<const uint8_t*>(Buffer::Data(target)), Buffer::Length(target), reinterpret_cast<uint8_t*>(output), &ctx, 0);
+
+    v8::Local<v8::Value> returnValue = Nan::CopyBuffer(output, 32).ToLocalChecked();
+    info.GetReturnValue().Set(returnValue);
+}
+
 NAN_METHOD(k12) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
@@ -464,6 +494,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("cryptonight_pico").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight_pico)).ToLocalChecked());
     Nan::Set(target, Nan::New("randomx").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(randomx)).ToLocalChecked());
     Nan::Set(target, Nan::New("argon2").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(argon2)).ToLocalChecked());
+    Nan::Set(target, Nan::New("astrobwt").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(astrobwt)).ToLocalChecked());
     Nan::Set(target, Nan::New("k12").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(k12)).ToLocalChecked());
     Nan::Set(target, Nan::New("c29s").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(c29s)).ToLocalChecked());
     Nan::Set(target, Nan::New("c29v").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(c29v)).ToLocalChecked());

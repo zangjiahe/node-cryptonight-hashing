@@ -36,7 +36,6 @@ float32x4_t vdivq_f32(const float32x4_t a, const float32x4_t b) {
 }
 #endif
 
-
 inline void vandq_f32(float32x4_t &v, uint32_t v2)
 {
     uint32x4_t vc = vdupq_n_u32(v2);

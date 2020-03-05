@@ -41,14 +41,13 @@ constexpr size_t pageSize = 2 * 1024 * 1024;
 } // namespace xmrig
 
 
-xmrig::MemoryPool::MemoryPool(size_t size, bool hugePages, uint32_t node) :
-    m_size(size)
+xmrig::MemoryPool::MemoryPool(size_t size, bool hugePages, uint32_t node)
 {
     if (!size) {
         return;
     }
 
-    m_memory = new VirtualMemory(size * pageSize, hugePages, false, node);
+    m_memory = new VirtualMemory(size * pageSize, hugePages, false, false, node);
 }
 
 

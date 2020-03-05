@@ -61,6 +61,10 @@
                 '<!@(uname -a | grep "x86_64" >/dev/null && echo "xmrig/3rdparty/argon2/arch/x86_64/lib/cpu-flags.c" || echo)',
                 '<!@(uname -a | grep "x86_64" >/dev/null || echo "xmrig/3rdparty/argon2/arch/generic/lib/argon2-arch.c" || echo)',
 
+                "xmrig/crypto/astrobwt/AstroBWT.cpp",
+                "xmrig/crypto/astrobwt/Salsa20.cpp",
+                "xmrig/crypto/astrobwt/salsa20_ref/salsa20.c",
+
                 "xmrig/crypto/defyx/defyx.cpp",
                 "xmrig/crypto/defyx/KangarooTwelve.c",
                 "xmrig/crypto/defyx/KeccakP-1600-reference.c",
