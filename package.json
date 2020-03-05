@@ -1,6 +1,6 @@
 {
     "name": "cryptonight-hashing",
-    "version": "16.0.1",
+    "version": "17.0.0",
     "main": "cryptonight-hashing",
     "author": {
         "name": "Multiple",
@@ -18,6 +18,8 @@
         "cryptonight",
         "randomx",
         "cuckaroo29",
+        "argon2",
+        "astrobwt",
         "KangarooTwelve",
         "monero"
     ]
