@@ -71,10 +71,10 @@ struct InitCtx {
 void init_rx(const uint8_t* seed_hash_data, xmrig::Algorithm::Id algo) {
     bool update_cache = false;
     if (!rx_cache[algo]) {
-        xmrig::VirtualMemory* const m_memory = new xmrig::VirtualMemory(RANDOMX_CACHE_MAX_SIZE, true, false, 0, 4096);
-        rx_cache[algo] = randomx_create_cache(static_cast<randomx_flags>(RANDOMX_FLAG_JIT | RANDOMX_FLAG_LARGE_PAGES), memory->raw());
+        xmrig::VirtualMemory* const pmemory = new xmrig::VirtualMemory(RANDOMX_CACHE_MAX_SIZE, true, false, 0, 4096);
+        rx_cache[algo] = randomx_create_cache(static_cast<randomx_flags>(RANDOMX_FLAG_JIT | RANDOMX_FLAG_LARGE_PAGES), pmemory->raw());
         if (!rx_cache[algo]) {
-            rx_cache[algo] = randomx_create_cache(RANDOMX_FLAG_JIT, memory->raw());
+            rx_cache[algo] = randomx_create_cache(RANDOMX_FLAG_JIT, pmemory->raw());
         }
         update_cache = true;
     }
