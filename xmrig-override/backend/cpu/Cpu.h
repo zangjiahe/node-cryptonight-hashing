@@ -41,6 +41,10 @@ public:
         return false;
 #endif
     }
+
+    bool hasBMI2() const {
+        return false; 
+    }
 };
 
 
