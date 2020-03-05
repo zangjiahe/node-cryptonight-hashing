@@ -33,6 +33,7 @@
 #define XMRIG_ALGO_CN_PICO  1
 #define XMRIG_ALGO_RANDOMX  1
 #define XMRIG_ALGO_ARGON2   1
+#define XMRIG_ALGO_ASTROBWT 1
 
 
 namespace xmrig {
