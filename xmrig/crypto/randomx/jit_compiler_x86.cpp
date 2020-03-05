@@ -36,7 +36,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include "crypto/randomx/program.hpp"
 #include "crypto/randomx/reciprocal.h"
 #include "crypto/randomx/virtual_memory.hpp"
-#include "crypto/rx/Rx.h"
 
 #ifdef _MSC_VER
 #   include <intrin.h>
