@@ -54,9 +54,12 @@ extern "C" {
   #define FNA(algo) xmrig::CnHash::fn(xmrig::Algorithm::algo, SOFT_AES ? xmrig::CnHash::AV_SINGLE_SOFT : xmrig::CnHash::AV_SINGLE, xmrig::Assembly::NONE)
 #endif
 
-const size_t max_mem_size = 20 * 1024 * 1024;
+
+const size_t max_mem_size   = 4 * 1024 * 1024;
+const size_t max_mem_size20 = 20 * 1024 * 1024;
 xmrig::VirtualMemory memrx(2 * 1024 * 1024, true, false, 0, 4096);
 static struct cryptonight_ctx* ctx = nullptr;
+static struct cryptonight_ctx* ctx20 = nullptr;
 static randomx_cache* rx_cache[xmrig::Algorithm::Id::MAX] = {nullptr};
 static randomx_vm* rx_vm[xmrig::Algorithm::Id::MAX] = {nullptr};
 //static xmrig::Algorithm::Id rx_variant = xmrig::Algorithm::Id::MAX;
@@ -65,6 +68,7 @@ static uint8_t rx_seed_hash[xmrig::Algorithm::Id::MAX][32] = {};
 struct InitCtx {
     InitCtx() {
         xmrig::CnCtx::create(&ctx, static_cast<uint8_t*>(_mm_malloc(max_mem_size, 4096)), max_mem_size, 1);
+        xmrig::CnCtx::create(&ctx20, static_cast<uint8_t*>(_mm_malloc(max_mem_size20, 4096)), max_mem_size20, 1);
     }
 } s;
 
@@ -376,7 +380,7 @@ NAN_METHOD(astrobwt) {
     const xmrig::cn_hash_fun fn = get_astrobwt_fn(algo);
 
     char output[32];
-    fn(reinterpret_cast<const uint8_t*>(Buffer::Data(target)), Buffer::Length(target), reinterpret_cast<uint8_t*>(output), &ctx, 0);
+    fn(reinterpret_cast<const uint8_t*>(Buffer::Data(target)), Buffer::Length(target), reinterpret_cast<uint8_t*>(output), &ctx20, 0);
 
     v8::Local<v8::Value> returnValue = Nan::CopyBuffer(output, 32).ToLocalChecked();
     info.GetReturnValue().Set(returnValue);
