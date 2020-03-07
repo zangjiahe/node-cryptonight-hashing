@@ -55,7 +55,7 @@ extern "C" {
 #endif
 
 const size_t max_mem_size = 20 * 1024 * 1024;
-xmrig::VirtualMemory mem(max_mem_size, true, false, 0, 4096);
+xmrig::VirtualMemory memrx(2 * 1024 * 1024, true, false, 0, 4096);
 static struct cryptonight_ctx* ctx = nullptr;
 static randomx_cache* rx_cache[xmrig::Algorithm::Id::MAX] = {nullptr};
 static randomx_vm* rx_vm[xmrig::Algorithm::Id::MAX] = {nullptr};
@@ -64,17 +64,17 @@ static uint8_t rx_seed_hash[xmrig::Algorithm::Id::MAX][32] = {};
 
 struct InitCtx {
     InitCtx() {
-        xmrig::CnCtx::create(&ctx, mem.scratchpad(), max_mem_size, 1);
+        xmrig::CnCtx::create(&ctx, static_cast<uint8_t*>(_mm_malloc(max_mem_size, 4096)), max_mem_size, 1);
     }
 } s;
 
 void init_rx(const uint8_t* seed_hash_data, xmrig::Algorithm::Id algo) {
     bool update_cache = false;
     if (!rx_cache[algo]) {
-        xmrig::VirtualMemory* const pmemory = new xmrig::VirtualMemory(RANDOMX_CACHE_MAX_SIZE, true, false, 0, 4096);
-        rx_cache[algo] = randomx_create_cache(static_cast<randomx_flags>(RANDOMX_FLAG_JIT | RANDOMX_FLAG_LARGE_PAGES), pmemory->raw());
+        uint8_t* const pmem = static_cast<uint8_t*>(_mm_malloc(RANDOMX_CACHE_MAX_SIZE, 4096));
+        rx_cache[algo] = randomx_create_cache(static_cast<randomx_flags>(RANDOMX_FLAG_JIT | RANDOMX_FLAG_LARGE_PAGES), pmem);
         if (!rx_cache[algo]) {
-            rx_cache[algo] = randomx_create_cache(RANDOMX_FLAG_JIT, pmemory->raw());
+            rx_cache[algo] = randomx_create_cache(RANDOMX_FLAG_JIT, pmem);
         }
         update_cache = true;
     }
@@ -120,9 +120,9 @@ void init_rx(const uint8_t* seed_hash_data, xmrig::Algorithm::Id algo) {
         flags |= RANDOMX_FLAG_HARD_AES;
 #endif
 
-        rx_vm[algo] = randomx_create_vm(static_cast<randomx_flags>(flags), rx_cache[algo], nullptr, mem.scratchpad());
+        rx_vm[algo] = randomx_create_vm(static_cast<randomx_flags>(flags), rx_cache[algo], nullptr, memrx.scratchpad());
         if (!rx_vm[algo]) {
-            rx_vm[algo] = randomx_create_vm(static_cast<randomx_flags>(flags - RANDOMX_FLAG_LARGE_PAGES), rx_cache[algo], nullptr, mem.scratchpad());
+            rx_vm[algo] = randomx_create_vm(static_cast<randomx_flags>(flags - RANDOMX_FLAG_LARGE_PAGES), rx_cache[algo], nullptr, memrx.scratchpad());
         }
     }
 }
