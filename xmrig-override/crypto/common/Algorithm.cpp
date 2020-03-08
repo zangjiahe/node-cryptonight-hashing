@@ -68,6 +68,7 @@ xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
     case RX_0:
     case RX_WOW:
     case RX_LOKI:
+    case RX_KEVA:
     case DEFYX:
     case RX_ARQ:
     case RX_SFX:
