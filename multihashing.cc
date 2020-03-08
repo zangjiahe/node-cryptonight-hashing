@@ -141,10 +141,11 @@ using namespace Nan;
 NAN_METHOD(randomx) {
     if (info.Length() < 2) return THROW_ERROR_EXCEPTION("You must provide two arguments.");
 
-    Local<Object> target = info[0]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
 
-    Local<Object> seed_hash = info[1]->ToObject();
+    Local<Object> seed_hash = info[1]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(seed_hash)) return THROW_ERROR_EXCEPTION("Argument 2 should be a buffer object.");
     if (Buffer::Length(seed_hash) != sizeof(rx_seed_hash[0])) return THROW_ERROR_EXCEPTION("Argument 2 size should be 32 bytes.");
 
@@ -231,7 +232,8 @@ static xmrig::cn_hash_fun get_astrobwt_fn(const int algo) {
 NAN_METHOD(cryptonight) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
 
     int algo = 0;
@@ -263,7 +265,8 @@ NAN_METHOD(cryptonight) {
 NAN_METHOD(cryptonight_light) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
 
     int algo = 0;
@@ -291,7 +294,8 @@ NAN_METHOD(cryptonight_light) {
 NAN_METHOD(cryptonight_heavy) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
 
     int algo = 0;
@@ -320,7 +324,8 @@ NAN_METHOD(cryptonight_heavy) {
 NAN_METHOD(cryptonight_pico) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
 
     int algo = 0;
@@ -342,7 +347,8 @@ NAN_METHOD(cryptonight_pico) {
 NAN_METHOD(argon2) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
 
     int algo = 0;
@@ -386,7 +392,9 @@ NAN_METHOD(astrobwt) {
 NAN_METHOD(k12) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
 
-    Local<Object> target = info[0]->ToObject();
+    v8::Isolate *isolate = v8::Isolate::GetCurrent();
+    Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
+	
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
 
     char output[32];
