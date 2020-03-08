@@ -8,7 +8,7 @@ multiHashing.randomx(Buffer.from("test"), seed, 19);
 
 let start = Date.now();
 for (let i = ITER; i; -- i) {
-  multiHashing.randomx(Buffer.from("test" + i), seed, 20);
+  multiHashing.randomx(Buffer.from("test" + i), seed, 19);
 }
 let end = Date.now();
 console.log("Perf: " + 1000 * ITER / (end - start) + " H/s");
