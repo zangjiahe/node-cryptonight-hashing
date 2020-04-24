@@ -434,7 +434,7 @@ NAN_METHOD(c29s) {
 
 	uint32_t edges[PROOFSIZE];
 	for (uint32_t n = 0; n < PROOFSIZE; n++)
-		edges[n]=ring->Get(n)->Uint32Value(Nan::GetCurrentContext()).FromJust();
+		edges[n]=ring->Get(Nan::GetCurrentContext(), n)->Uint32Value(Nan::GetCurrentContext()).FromJust();
 	
 	int retval = c29s_verify(edges,&keys);
 
@@ -454,7 +454,7 @@ NAN_METHOD(c29v) {
 
 	uint32_t edges[PROOFSIZE];
 	for (uint32_t n = 0; n < PROOFSIZE; n++)
-		edges[n]=ring->Get(n)->Uint32Value(Nan::GetCurrentContext()).FromJust();
+		edges[n]=ring->Get(Nan::GetCurrentContext(), n)->Uint32Value(Nan::GetCurrentContext()).FromJust();
 	
 	int retval = c29v_verify(edges,&keys);
 
@@ -473,7 +473,7 @@ NAN_METHOD(c29_cycle_hash) {
 	int bitpos = 0;
 	for(int i = 0; i < PROOFSIZE; i++){
 
-		uint32_t node = ring->Get(i)->Uint32Value(Nan::GetCurrentContext()).FromJust();
+		uint32_t node = ring->Get(Nan::GetCurrentContext(), i)->Uint32Value(Nan::GetCurrentContext()).FromJust();
 
 		for(int j = 0; j < EDGEBITS; j++) {
 			
