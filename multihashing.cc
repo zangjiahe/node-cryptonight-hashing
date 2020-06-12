@@ -509,7 +509,7 @@ NAN_METHOD(kawpow) {
         const uint32_t height = Nan::To<uint32_t>(info[0]).FromMaybe(0);
 
 	Local<Object> header_nonce = info[1]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
-	if (!Buffer::HasInstance(header)) return THROW_ERROR_EXCEPTION("Argument 2 should be a buffer object.");
+	if (!Buffer::HasInstance(header_nonce)) return THROW_ERROR_EXCEPTION("Argument 2 should be a buffer object.");
 	if (Buffer::Length(header_nonce) != 40) return THROW_ERROR_EXCEPTION("Argument 2 should be a 40 bytes long buffer object.");
 
 	Local<Object> target_buff = info[2]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
