@@ -16,7 +16,7 @@
                 "xmrig/crypto/cn/c_groestl.c",
                 "xmrig/crypto/cn/c_jh.c",
                 "xmrig/crypto/cn/c_skein.c",
-                "xmrig-override/crypto/common/Algorithm.cpp",
+                "xmrig-override/base/crypto/Algorithm.cpp",
                 "xmrig/crypto/cn/CnCtx.cpp",
                 "xmrig/crypto/cn/CnHash.cpp",
                 "xmrig/crypto/common/MemoryPool.cpp",
