@@ -62,7 +62,7 @@ extern "C"
 static inline void do_blake_hash(const uint8_t *input, size_t len, uint8_t *output) {
     blake256_hash(output, input, len);
 }
-      4
+
 
 static inline void do_groestl_hash(const uint8_t *input, size_t len, uint8_t *output) {
     groestl(input, len * 8, output);
