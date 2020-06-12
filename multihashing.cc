@@ -514,7 +514,7 @@ NAN_METHOD(kawpow) {
 
 	Local<Object> target_buff = info[2]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
 	if (!Buffer::HasInstance(target_buff)) return THROW_ERROR_EXCEPTION("Argument 3 should be a buffer object.");
-	if (Buffer::Length(target_Buff) != 8) return THROW_ERROR_EXCEPTION("Argument 3 should be a 8 bytes long buffer object.");
+	if (Buffer::Length(target_buff) != 8) return THROW_ERROR_EXCEPTION("Argument 3 should be a 8 bytes long buffer object.");
         const uint64_t target = *reinterpret_cast<const uint64_t*>(Buffer::Data(target_buff));
 
 	xmrig::KPCache::s_cache.init(height / xmrig::KPHash::EPOCH_LENGTH);
