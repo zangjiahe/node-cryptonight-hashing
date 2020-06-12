@@ -64,10 +64,8 @@
 
                 "xmrig/crypto/astrobwt/AstroBWT.cpp",
                 "xmrig/crypto/astrobwt/Salsa20.cpp",
-                "xmrig/crypto/astrobwt/sha3.cpp",
                 "xmrig/crypto/astrobwt/salsa20_ref/salsa20.c",
 
-                "xmrig/crypto/defyx/defyx.cpp",
                 "xmrig/crypto/defyx/KangarooTwelve.c",
                 "xmrig/crypto/defyx/KeccakP-1600-reference.c",
                 "xmrig/crypto/defyx/KeccakSpongeWidth1600.c",
