@@ -16,7 +16,6 @@
 #include "crypto/cn/CnHash.h"
 #include "crypto/randomx/configuration.h"
 #include "crypto/randomx/randomx.h"
-#include "crypto/defyx/defyx.h"
 #include "crypto/astrobwt/AstroBWT.h"
 
 extern "C" {
