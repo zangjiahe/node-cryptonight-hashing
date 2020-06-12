@@ -17,6 +17,8 @@
 #include "crypto/randomx/configuration.h"
 #include "crypto/randomx/randomx.h"
 #include "crypto/astrobwt/AstroBWT.h"
+#include "crypto/kawpow/KPHash.h"
+#include "crypto/kawpow/KPCache.h"
 
 extern "C" {
 #include "crypto/defyx/KangarooTwelve.h"
@@ -498,6 +500,39 @@ NAN_METHOD(c29_cycle_hash) {
 	info.GetReturnValue().Set(returnValue);
 }
 
+NAN_METHOD(kawpow) {
+	if (info.Length() != 4) return THROW_ERROR_EXCEPTION("You must provide 4 arguments: height, header hash, nonce, target");
+
+	v8::Isolate *isolate = v8::Isolate::GetCurrent();
+
+        if (!info[0]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 1 should be a number");
+        const uint32_t height = Nan::To<int>(info[0]).FromMaybe(0);
+
+	Local<Object> header = info[1]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
+	if (!Buffer::HasInstance(header)) return THROW_ERROR_EXCEPTION("Argument 2 should be a buffer object.");
+
+        if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
+        const uint64_t nonce = Nan::To<int>(info[2]).FromMaybe(0);
+
+        if (!info[3]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 4 should be a number");
+        const uint64_t target = Nan::To<int>(info[3]).FromMaybe(0);
+
+	KPCache::s_cache.init(height / KPHash::EPOCH_LENGTH);
+        uint32_t output[8];
+        uint32_t mix_hash[8];
+	KPHash::calculate(KPCache::s_cache, height, reinterpret_cast<const uint8_t*>(Buffer::Data(header)), nonce, output, mix_hash);
+
+	uint8_t hash[32]{ 0 };
+	for (size_t i = 0; i < sizeof(hash); ++i) hash[i] = ((uint8_t*)output)[sizeof(hash) - 1 - i];
+
+	if (*reinterpret_cast<uint64_t*>(hash + 24) < target) {
+		v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)mix_hash, 32).ToLocalChecked();
+		info.GetReturnValue().Set(returnValue);
+        } else {
+		info.GetReturnValue().Set(Nan::Null());
+	}
+}
+
 
 NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("cryptonight").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight)).ToLocalChecked());
@@ -511,7 +546,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("c29s").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(c29s)).ToLocalChecked());
     Nan::Set(target, Nan::New("c29v").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(c29v)).ToLocalChecked());
     Nan::Set(target, Nan::New("c29_cycle_hash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(c29_cycle_hash)).ToLocalChecked());
+    Nan::Set(target, Nan::New("kawpow").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(kawpow)).ToLocalChecked());
 }
 
 NODE_MODULE(cryptonight, init)
-
