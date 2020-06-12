@@ -16,6 +16,8 @@
                 "xmrig/crypto/cn/c_groestl.c",
                 "xmrig/crypto/cn/c_jh.c",
                 "xmrig/crypto/cn/c_skein.c",
+                "xmrig/base/crypto/keccak.cpp",
+                "xmrig/base/crypto/sha3.cpp",
                 "xmrig-override/base/crypto/Algorithm.cpp",
                 "xmrig/crypto/cn/CnCtx.cpp",
                 "xmrig/crypto/cn/CnHash.cpp",
