@@ -71,6 +71,9 @@
                 "xmrig/crypto/defyx/KeccakSpongeWidth1600.c",
                 "xmrig/crypto/defyx/yescrypt-best.c",
                 "xmrig/crypto/defyx/sha256.c",
+
+		"xmrig/crypto/kawpow/KPCache.cpp",
+		"xmrig/crypto/kawpow/KPHash.cpp"
             ],
             "include_dirs": [
                 "xmrig-override",
