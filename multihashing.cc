@@ -522,7 +522,7 @@ NAN_METHOD(kawpow) {
         uint32_t mix_hash[8];
 	uint8_t header_hash[32];
 	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_nonce)), sizeof(header_hash));
-        const uint64_t nonce = *(reinterpret_cast<const uint64_t*>(Buffer::Data(header_hash))+4);
+        const uint64_t nonce = *(reinterpret_cast<const uint64_t*>(Buffer::Data(header_nonce))+4);
 	xmrig::KPHash::calculate(xmrig::KPCache::s_cache, height, header_hash, nonce, output, mix_hash);
 
 	uint8_t hash[32]{ 0 };
