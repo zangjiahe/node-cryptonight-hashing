@@ -501,7 +501,7 @@ NAN_METHOD(c29_cycle_hash) {
 }
 
 NAN_METHOD(kawpow) {
-	if (info.Length() != 4) return THROW_ERROR_EXCEPTION("You must provide 3 arguments: height, header hash + nonce (buff 40), target (buff 8)");
+	if (info.Length() != 3) return THROW_ERROR_EXCEPTION("You must provide 3 arguments: height, header hash + nonce (buff 40), target (buff 8)");
 
 	v8::Isolate *isolate = v8::Isolate::GetCurrent();
 
