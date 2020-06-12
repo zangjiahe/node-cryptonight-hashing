@@ -16,6 +16,7 @@ node test_sync-rto.js || exit 1
 node test_sync-gpu.js || exit 1
 node test_sync-rwz.js || exit 1
 node test_sync-zls.js || exit 1
+node test_sync-ccx.js || exit 1
 node test_sync-double.js || exit 1
 node test_sync.js || exit 1
 node test_sync_light.js || exit 1
