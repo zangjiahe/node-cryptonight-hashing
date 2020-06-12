@@ -517,10 +517,10 @@ NAN_METHOD(kawpow) {
         if (!info[3]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 4 should be a number");
         const uint64_t target = Nan::To<int>(info[3]).FromMaybe(0);
 
-	xmrig::KPCache::s_cache.init(height / KPHash::EPOCH_LENGTH);
+	xmrig::KPCache::s_cache.init(height / xmrig::KPHash::EPOCH_LENGTH);
         uint32_t output[8];
         uint32_t mix_hash[8];
-	xmrig::KPHash::calculate(KPCache::s_cache, height, reinterpret_cast<const uint8_t*>(Buffer::Data(header)), nonce, output, mix_hash);
+	xmrig::KPHash::calculate(xmrig::KPCache::s_cache, height, reinterpret_cast<const uint8_t*>(Buffer::Data(header)), nonce, output, mix_hash);
 
 	uint8_t hash[32]{ 0 };
 	for (size_t i = 0; i < sizeof(hash); ++i) hash[i] = ((uint8_t*)output)[sizeof(hash) - 1 - i];
