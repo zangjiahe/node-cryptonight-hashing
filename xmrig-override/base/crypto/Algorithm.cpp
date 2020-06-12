@@ -24,7 +24,7 @@
  */
 
 
-#include "crypto/common/Algorithm.h"
+#include "base/crypto/Algorithm.h"
 
 xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
 {
