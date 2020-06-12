@@ -74,7 +74,8 @@
 
 		"xmrig/crypto/kawpow/KPCache.cpp",
 		"xmrig/crypto/kawpow/KPHash.cpp",
-		"xmrig/3rdparty/libethash/keccakf800.c"
+		"xmrig/3rdparty/libethash/keccakf800.c",
+		"xmrig/3rdparty/libethash/ethash_internal.c"
             ],
             "include_dirs": [
                 "xmrig-override",
