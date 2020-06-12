@@ -98,3 +98,117 @@ xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
 
     return UNKNOWN;
 }
+
+size_t xmrig::Algorithm::l2() const
+{
+#   ifdef XMRIG_ALGO_RANDOMX
+    switch (m_id) {
+    case RX_0:
+    case RX_LOKI:
+    case RX_SFX:
+        return 0x40000;
+
+    case RX_WOW:
+    case RX_KEVA:
+    case RX_DEFYX:
+        return 0x20000;
+
+    case RX_ARQ:
+        return 0x10000;
+
+    default:
+        break;
+    }
+#   endif
+
+    return 0;
+}
+
+
+size_t xmrig::Algorithm::l3() const
+{
+    constexpr size_t oneMiB = 0x100000;
+
+    const auto f = family();
+    assert(f != UNKNOWN);
+
+    switch (f) {
+    case CN:
+        return oneMiB * 2;
+
+    case CN_LITE:
+        return oneMiB;
+
+    case CN_HEAVY:
+        return oneMiB * 4;
+
+    case CN_PICO:
+        return oneMiB / 4;
+
+    default:
+        break;
+    }
+
+#   ifdef XMRIG_ALGO_RANDOMX
+    if (f == RANDOM_X) {
+        switch (m_id) {
+        case RX_0:
+        case RX_LOKI:
+        case RX_SFX:
+            return oneMiB * 2;
+
+        case RX_WOW:
+        case RX_KEVA:
+            return oneMiB;
+
+        case RX_ARQ:
+        case RX_DEFYX:
+            return oneMiB / 4;
+
+        default:
+            break;
+        }
+    }
+#   endif
+
+#   ifdef XMRIG_ALGO_ARGON2
+    if (f == ARGON2) {
+        switch (m_id) {
+        case AR2_CHUKWA:
+            return oneMiB / 2;
+
+        case AR2_WRKZ:
+            return oneMiB / 4;
+
+        default:
+            break;
+        }
+    }
+#   endif
+
+#   ifdef XMRIG_ALGO_ASTROBWT
+    if (f == ASTROBWT) {
+        switch (m_id) {
+        case ASTROBWT_DERO:
+            return oneMiB * 20;
+
+        default:
+            break;
+        }
+    }
+#   endif
+
+#   ifdef XMRIG_ALGO_KAWPOW
+    if (f == KAWPOW) {
+        switch (m_id) {
+        case KAWPOW_RVN:
+            return 32768;
+
+        default:
+            break;
+        }
+    }
+#   endif
+
+    return 0;
+}

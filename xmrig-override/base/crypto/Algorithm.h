@@ -108,6 +108,9 @@ public:
     inline bool operator==(const Algorithm &other) const  { return isEqual(other); }
     inline operator Algorithm::Id() const                 { return m_id; }
 
+    size_t l2() const;
+    size_t l3() const;
+
     static Family family(Id id);
 
 private:
