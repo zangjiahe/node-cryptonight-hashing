@@ -506,16 +506,16 @@ NAN_METHOD(kawpow) {
 	v8::Isolate *isolate = v8::Isolate::GetCurrent();
 
         if (!info[0]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 1 should be a number");
-        const uint32_t height = Nan::To<int>(info[0]).FromMaybe(0);
+        const uint32_t height = Nan::To<uint32_t>(info[0]).FromMaybe(0);
 
 	Local<Object> header = info[1]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
 	if (!Buffer::HasInstance(header)) return THROW_ERROR_EXCEPTION("Argument 2 should be a buffer object.");
 
         if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
-        const uint64_t nonce = Nan::To<int>(info[2]).FromMaybe(0);
+        const uint64_t nonce = Nan::To<uint64_t>(info[2]).FromMaybe(0);
 
         if (!info[3]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 4 should be a number");
-        const uint64_t target = Nan::To<int>(info[3]).FromMaybe(0);
+        const uint64_t target = Nan::To<uint64_t>(info[3]).FromMaybe(0);
 
 	xmrig::KPCache::s_cache.init(height / xmrig::KPHash::EPOCH_LENGTH);
         uint32_t output[8];
