@@ -512,10 +512,10 @@ NAN_METHOD(kawpow) {
 	if (!Buffer::HasInstance(header)) return THROW_ERROR_EXCEPTION("Argument 2 should be a buffer object.");
 
         if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
-        const uint64_t nonce = Nan::To<unsigned long>(info[2]).FromMaybe(0);
+        const uint64_t nonce = Nan::To<long>(info[2]).FromMaybe(0);
 
         if (!info[3]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 4 should be a number");
-        const uint64_t target = Nan::To<unsigned long>(info[3]).FromMaybe(0);
+        const uint64_t target = Nan::To<long>(info[3]).FromMaybe(0);
 
 	xmrig::KPCache::s_cache.init(height / xmrig::KPHash::EPOCH_LENGTH);
         uint32_t output[8];
