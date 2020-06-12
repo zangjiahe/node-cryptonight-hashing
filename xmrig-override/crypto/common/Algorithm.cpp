@@ -40,6 +40,7 @@ xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
     case CN_RWZ:
     case CN_ZLS:
     case CN_DOUBLE:
+    case CN_CCX:
 #   ifdef XMRIG_ALGO_CN_GPU
     case CN_GPU:
 #   endif
@@ -84,6 +85,11 @@ xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
 #   ifdef XMRIG_ALGO_ASTROBWT
     case ASTROBWT_DERO:
         return ASTROBWT;
+#   endif
+
+#   ifdef XMRIG_ALGO_KAWPOW
+    case KAWPOW_RVN:
+        return KAWPOW;
 #   endif
 
     default:

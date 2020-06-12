@@ -4,9 +4,11 @@
  * Copyright 2014      Lucas Jones <https://github.com/lucasjones>
  * Copyright 2014-2016 Wolf9466    <https://github.com/OhGodAPet>
  * Copyright 2016      Jay D Dee   <jayddee246@gmail.com>
- * Copyright 2017-2018 XMR-Stak    <https://github.com/fireice-uk>, <https://github.com/psychocrypt>
+ * Copyright 2017-2019 XMR-Stak    <https://github.com/fireice-uk>, <https://github.com/psychocrypt>
+ * Copyright 2018      Lee Clagett <https://github.com/vtnerd>
+ * Copyright 2018-2019 tevador     <tevador@gmail.com>
  * Copyright 2018-2020 SChernykh   <https://github.com/SChernykh>
- * Copyright 2016-2020 XMRig       <https://github.com/xmrig>, <support@xmrig.com>
+ * Copyright 2016-2019 XMRig       <https://github.com/xmrig>, <support@xmrig.com>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -22,31 +24,35 @@
  *   along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef XMRIG_ARGON2_HASH_H
-#define XMRIG_ARGON2_HASH_H
+#ifndef XMRIG_KP_HASH_H
+#define XMRIG_KP_HASH_H
 
 
-#include "3rdparty/argon2.h"
-#include "base/crypto/Algorithm.h"
-#include "crypto/cn/CryptoNight.h"
+#include <stdint.h>
 
 
-namespace xmrig { namespace argon2 {
-
-
-template<Algorithm::Id ALGO>
-inline void single_hash(const uint8_t *__restrict__ input, size_t size, uint8_t *__restrict__ output, cryptonight_ctx **__restrict__ ctx, uint64_t)
+namespace xmrig
 {
-    if (ALGO == Algorithm::AR2_CHUKWA) {
-        argon2id_hash_raw_ex(3, 512, 1, input, size, input, 16, output, 32, ctx[0]->memory);
-    }
-    else if (ALGO == Algorithm::AR2_WRKZ) {
-        argon2id_hash_raw_ex(4, 256, 1, input, size, input, 16, output, 32, ctx[0]->memory);
-    }
-}
 
 
-}} // namespace xmrig::argon2
+class KPCache;
 
 
-#endif /* XMRIG_ARGON2_HASH_H */
+class KPHash
+{
+public:
+    static constexpr uint32_t EPOCH_LENGTH  = 7500;
+    static constexpr uint32_t PERIOD_LENGTH = 3;
+    static constexpr int CNT_CACHE = 11;
+    static constexpr int CNT_MATH = 18;
+    static constexpr uint32_t REGS = 32;
+    static constexpr uint32_t LANES = 16;
+
+    static void calculate(const KPCache& light_cache, uint32_t block_height, const uint8_t (&header_hash)[32], uint64_t nonce, uint32_t (&output)[8], uint32_t (&mix_hash)[8]);
+};
+
+
+} /* namespace xmrig */
+
+
+#endif /* XMRIG_KP_HASH_H */
