@@ -1,7 +1,7 @@
 "use strict";
 let multiHashing = require('../build/Release/cryptonight-hashing');
 
-const ITER = 50;
+const ITER = 100;
 let input1 = Buffer.from('ffeeddccbbaa9988776655443322110000112233445566778899aabbccddeefff0debc9a78563412', 'hex');
 let input2 = Buffer.from('fc3c8e41e0be24c8', 'hex');
 
