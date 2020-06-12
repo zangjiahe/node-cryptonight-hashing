@@ -25,6 +25,7 @@
 
 
 #include "base/crypto/Algorithm.h"
+#include <cassert>
 
 xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
 {
@@ -70,7 +71,7 @@ xmrig::Algorithm::Family xmrig::Algorithm::family(Id id)
     case RX_WOW:
     case RX_LOKI:
     case RX_KEVA:
-    case DEFYX:
+    case RX_DEFYX:
     case RX_ARQ:
     case RX_SFX:
         return RANDOM_X;
