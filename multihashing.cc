@@ -520,7 +520,9 @@ NAN_METHOD(kawpow) {
 	xmrig::KPCache::s_cache.init(height / xmrig::KPHash::EPOCH_LENGTH);
         uint32_t output[8];
         uint32_t mix_hash[8];
-	xmrig::KPHash::calculate(xmrig::KPCache::s_cache, height, reinterpret_cast<const uint8_t (*)[32]>(Buffer::Data(header)), nonce, output, mix_hash);
+	uint8_t header_hash[32];
+	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header)), sizeof(header_hash));
+	xmrig::KPHash::calculate(xmrig::KPCache::s_cache, height, header_hash, nonce, output, mix_hash);
 
 	uint8_t hash[32]{ 0 };
 	for (size_t i = 0; i < sizeof(hash); ++i) hash[i] = ((uint8_t*)output)[sizeof(hash) - 1 - i];
