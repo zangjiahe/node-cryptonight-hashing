@@ -21,7 +21,7 @@
 #include "crypto/kawpow/KPCache.h"
 
 extern "C" {
-#include "crypto/defyx/KangarooTwelve.h"
+#include "crypto/randomx/defyx/KangarooTwelve.h"
 #include "crypto/randomx/blake2/blake2.h"
 #include "c29/portable_endian.h" // for htole32/64
 #include "c29/int-util.h"
