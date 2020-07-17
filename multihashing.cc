@@ -171,13 +171,13 @@ NAN_METHOD(randomx) {
     char output[32];
     xmrig::Algorithm xalgo;
     switch (algo) {
-        case 0:  xalgo = xmrig::Algorithm::RX_0; break
-        case 1:  xalgo = xmrig::Algorithm::RX_DEFYX; break
-        case 2:  xalgo = xmrig::Algorithm::RX_ARQ; break
-        case 3:  xalgo = xmrig::Algorithm::RX_XLA; break
-        case 17: xalgo = xmrig::Algorithm::RX_WOW; break
-        case 18: xalgo = xmrig::Algorithm::RX_LOKI; break
-        case 19: xalgo = xmrig::Algorithm::RX_KEVA; break
+        case 0:  xalgo = xmrig::Algorithm::RX_0; break;
+        case 1:  xalgo = xmrig::Algorithm::RX_DEFYX; break;
+        case 2:  xalgo = xmrig::Algorithm::RX_ARQ; break;
+        case 3:  xalgo = xmrig::Algorithm::RX_XLA; break;
+        case 17: xalgo = xmrig::Algorithm::RX_WOW; break;
+        case 18: xalgo = xmrig::Algorithm::RX_LOKI; break;
+        case 19: xalgo = xmrig::Algorithm::RX_KEVA; break;
         default: xalgo = xmrig::Algorithm::RX_0;
     }
     randomx_calculate_hash(rx_vm[algo], reinterpret_cast<const uint8_t*>(Buffer::Data(target)), Buffer::Length(target), reinterpret_cast<uint8_t*>(output), xalgo);
