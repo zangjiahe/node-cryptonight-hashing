@@ -5,8 +5,8 @@
  * Copyright 2014-2016 Wolf9466    <https://github.com/OhGodAPet>
  * Copyright 2016      Jay D Dee   <jayddee246@gmail.com>
  * Copyright 2017-2018 XMR-Stak    <https://github.com/fireice-uk>, <https://github.com/psychocrypt>
- * Copyright 2018-2019 SChernykh   <https://github.com/SChernykh>
- * Copyright 2016-2019 XMRig       <https://github.com/xmrig>, <support@xmrig.com>
+ * Copyright 2018-2020 SChernykh   <https://github.com/SChernykh>
+ * Copyright 2016-2020 XMRig       <https://github.com/xmrig>, <support@xmrig.com>
  *
  *   This program is free software: you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
@@ -26,33 +26,20 @@
 #define XMRIG_CPU_H
 
 
-#include "crypto/common/Assembly.h"
+#include "backend/cpu/interfaces/ICpuInfo.h"
 
 
 namespace xmrig {
-
-class ICpuInfo
-{
-public:
-    bool hasAVX2() const {
-#ifdef __AVX2__
-        return true;
-#else
-        return false;
-#endif
-    }
-
-    bool hasBMI2() const {
-        return false; 
-    }
-};
 
 
 class Cpu
 {
 public:
-    static ICpuInfo *info() { static ICpuInfo info; return &info; }
-    inline static Assembly::Id assembly(Assembly::Id hint) { return hint; }
+    static ICpuInfo *info();
+    static rapidjson::Value toJSON(rapidjson::Document &doc);
+    static void release();
+
+    inline static Assembly::Id assembly(Assembly::Id hint) { return hint == Assembly::AUTO ? Cpu::info()->assembly() : hint; }
 };
 
 
