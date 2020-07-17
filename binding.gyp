@@ -27,7 +27,6 @@
                 "xmrig/crypto/common/VirtualMemory_unix.cpp",
 
                 "xmrig/crypto/randomx/aes_hash.cpp",
-                "xmrig/crypto/randomx/argon2_ref.c",
                 "xmrig/crypto/randomx/bytecode_machine.cpp",
                 "xmrig/crypto/randomx/dataset.cpp",
                 "xmrig/crypto/randomx/soft_aes.cpp",
@@ -38,7 +37,6 @@
                 "xmrig/crypto/randomx/superscalar.cpp",
                 "xmrig/crypto/randomx/vm_compiled.cpp",
                 "xmrig/crypto/randomx/vm_interpreted_light.cpp",
-                "xmrig/crypto/randomx/argon2_core.c",
                 "xmrig/crypto/randomx/blake2_generator.cpp",
                 "xmrig/crypto/randomx/instructions_portable.cpp",
                 "xmrig/crypto/randomx/reciprocal.c",
