@@ -57,7 +57,6 @@ protected:
     inline size_t L3() const override               { return 0; }
     inline size_t nodes() const override            { return 0; }
     inline size_t packages() const override         { return 1; }
-    inline size_t threads() const override          { return m_threads; }
     inline Vendor vendor() const override           { return m_vendor; }
 
 protected:
