@@ -95,6 +95,9 @@ void init_rx(const uint8_t* seed_hash_data, xmrig::Algorithm::Id algo) {
             case 2:
                 randomx_apply_config(RandomX_ArqmaConfig);
                 break;
+            case 3:
+                randomx_apply_config(RandomX_Scala2Config);
+                break;
             case 17:
                 randomx_apply_config(RandomX_WowneroConfig);
                 break;
@@ -166,11 +169,18 @@ NAN_METHOD(randomx) {
     }
 
     char output[32];
+    xmrig::Algorithm xalgo;
     switch (algo) {
-      case 1:  defyx_calculate_hash  (rx_vm[algo], reinterpret_cast<const uint8_t*>(Buffer::Data(target)), Buffer::Length(target), reinterpret_cast<uint8_t*>(output));
-               break;
-      default: randomx_calculate_hash(rx_vm[algo], reinterpret_cast<const uint8_t*>(Buffer::Data(target)), Buffer::Length(target), reinterpret_cast<uint8_t*>(output));
+        case 0:  xalgo = xmrig::Algorithm::RX_0; break
+        case 1:  xalgo = xmrig::Algorithm::RX_DEFYX; break
+        case 2:  xalgo = xmrig::Algorithm::RX_ARQ; break
+        case 3:  xalgo = xmrig::Algorithm::RX_XLA; break
+        case 17: xalgo = xmrig::Algorithm::RX_WOW; break
+        case 18: xalgo = xmrig::Algorithm::RX_LOKI; break
+        case 19: xalgo = xmrig::Algorithm::RX_KEVA; break
+        default: xalgo = xmrig::Algorithm::RX_0;
     }
+    randomx_calculate_hash(rx_vm[algo], reinterpret_cast<const uint8_t*>(Buffer::Data(target)), Buffer::Length(target), reinterpret_cast<uint8_t*>(output), xalgo);
 
     v8::Local<v8::Value> returnValue = Nan::CopyBuffer(output, 32).ToLocalChecked();
     info.GetReturnValue().Set(returnValue);

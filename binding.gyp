@@ -71,7 +71,8 @@
                 "xmrig/crypto/defyx/KeccakP-1600-reference.c",
                 "xmrig/crypto/defyx/KeccakSpongeWidth1600.c",
                 "xmrig/crypto/defyx/yescrypt-best.c",
-                "xmrig/crypto/defyx/sha256.c",
+                "xmrig/crypto/panthera/sha256.c",
+                "xmrig/crypto/panthera/yespower-opt.c",
 
 		"xmrig/crypto/kawpow/KPCache.cpp",
 		"xmrig/crypto/kawpow/KPHash.cpp",
