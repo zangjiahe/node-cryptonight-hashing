@@ -172,11 +172,11 @@ NAN_METHOD(randomx) {
     xmrig::Algorithm xalgo;
     switch (algo) {
         case 0:  xalgo = xmrig::Algorithm::RX_0; break;
-        case 1:  xalgo = xmrig::Algorithm::RX_DEFYX; break;
+        //case 1:  xalgo = xmrig::Algorithm::RX_DEFYX; break;
         case 2:  xalgo = xmrig::Algorithm::RX_ARQ; break;
         case 3:  xalgo = xmrig::Algorithm::RX_XLA; break;
         case 17: xalgo = xmrig::Algorithm::RX_WOW; break;
-        case 18: xalgo = xmrig::Algorithm::RX_LOKI; break;
+        //case 18: xalgo = xmrig::Algorithm::RX_LOKI; break;
         case 19: xalgo = xmrig::Algorithm::RX_KEVA; break;
         default: xalgo = xmrig::Algorithm::RX_0;
     }
@@ -233,6 +233,7 @@ static xmrig::cn_hash_fun get_argon2_fn(const int algo) {
   switch (algo) {
     case 0:  return FN(AR2_CHUKWA);
     case 1:  return FN(AR2_WRKZ);
+    case 2:  return FN(AR2_CHUKWA_V2);
     default: return FN(AR2_CHUKWA);
   }
 }
