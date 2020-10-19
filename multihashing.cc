@@ -427,7 +427,7 @@ static void setsipkeys(const char *keybuf,siphash_keys *keys) {
 
 static void c29_setheader(const char *header, const uint32_t headerlen, siphash_keys *keys) {
 	char hdrkey[32];
-	rx_blake2b((void *)hdrkey, sizeof(hdrkey), (const void *)header, headerlen, 0, 0);
+	rx_blake2b_wrapper::run((void *)hdrkey, sizeof(hdrkey), (const void *)header, headerlen);
 	setsipkeys(hdrkey,keys);
 }
 
@@ -539,7 +539,7 @@ NAN_METHOD(c29_cycle_hash) {
 	}
 
 	unsigned char cyclehash[32];
-	rx_blake2b((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata), 0, 0);
+	rx_blake2b_wrapper::run((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata));
 	
 	unsigned char rev_cyclehash[32];
 	for(int i = 0; i < 32; i++)
@@ -576,7 +576,7 @@ NAN_METHOD(c29b_cycle_hash) {
 	}
 
 	unsigned char cyclehash[32];
-	rx_blake2b((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata), 0, 0);
+	rx_blake2b_wrapper::run((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata));
 	
 	unsigned char rev_cyclehash[32];
 	for(int i = 0; i < 32; i++)
@@ -613,7 +613,7 @@ NAN_METHOD(c29i_cycle_hash) {
 	}
 
 	unsigned char cyclehash[32];
-	rx_blake2b((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata), 0, 0);
+	rx_blake2b_wrapper::run((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata));
 
 	unsigned char rev_cyclehash[32];
 	for(int i = 0; i < 32; i++)
