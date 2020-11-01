@@ -97,7 +97,7 @@ void KPHash::verify(const uint32_t (&header_hash)[8], uint64_t nonce, const uint
     ethash_keccakf800(state);
 
     for (int i = 0; i < 8; ++i)
-        output[i] = le::uint32(state[i]);
+        output[i] = state[i];
 }
 
 
