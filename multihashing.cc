@@ -640,10 +640,10 @@ NAN_METHOD(kawpow) {
 	if (Buffer::Length(mix_hash_buff) != 32) return THROW_ERROR_EXCEPTION("Argument 3 should be a 8 bytes long buffer object.");
 
 	uint32_t header_hash[8];
-	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_buff)), sizeof(header_hash));
+	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_hash_buff)), sizeof(header_hash));
         const uint64_t nonce = *(reinterpret_cast<const uint64_t*>(Buffer::Data(nonce_buff)));
         uint32_t mix_hash[8];
-	memcpy(mix_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(mix_hash_buff)), sizeof(mix_hash_hash));
+	memcpy(mix_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(mix_hash_buff)), sizeof(mix_hash));
 
         uint32_t output[8];
 	xmrig::KPHash::verify(header_hash, nonce, mix_hash, output);
