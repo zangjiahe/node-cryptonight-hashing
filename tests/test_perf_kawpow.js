@@ -8,7 +8,7 @@ let input3 = Buffer.from('89732e5ff8711c32558a308fc4b8ee77416038a70995670e3eb84c
 
 let start = Date.now();
 for (let i = ITER; i; -- i) {
-  multiHashing.kawpow(30000, input1, input2, input3);
+  multiHashing.kawpow(input1, input2, input3);
 }
 let end = Date.now();
 console.log("Perf: " + 1000 * ITER / (end - start) + " H/s");
