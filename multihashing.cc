@@ -18,7 +18,6 @@
 #include "crypto/randomx/randomx.h"
 #include "crypto/astrobwt/AstroBWT.h"
 #include "crypto/kawpow/KPHash.h"
-#include "crypto/kawpow/KPCache.h"
 
 extern "C" {
 #include "crypto/randomx/defyx/KangarooTwelve.h"
@@ -640,7 +639,6 @@ NAN_METHOD(kawpow) {
 	if (!Buffer::HasInstance(mix_hash_buff)) return THROW_ERROR_EXCEPTION("Argument 3 should be a buffer object.");
 	if (Buffer::Length(mix_hash_buff) != 32) return THROW_ERROR_EXCEPTION("Argument 3 should be a 8 bytes long buffer object.");
 
-	xmrig::KPCache::s_cache.init(height / xmrig::KPHash::EPOCH_LENGTH);
 	uint32_t header_hash[8];
 	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_buff)), sizeof(header_hash));
         const uint64_t nonce = *(reinterpret_cast<const uint64_t*>(Buffer::Data(nonce_buff)));
