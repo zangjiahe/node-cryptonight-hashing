@@ -648,7 +648,7 @@ NAN_METHOD(kawpow) {
 
         uint32_t output[8];
 	xmrig::KPHash::verify(header_hash, nonce, mix_hash, output);
-        std::reverse((char*)(&output[0]), (char*)(&output[32]));
+        std::reverse((char*)(&output[0]), (char*)(&output[8]));
 
 	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)output, 32).ToLocalChecked();
 	info.GetReturnValue().Set(returnValue);
