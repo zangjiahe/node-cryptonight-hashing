@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <nan.h>
 #include <stdexcept>
-#include <intrin.h>
 #include <algorithm>
 
 //#if (defined(__AES__) && (__AES__ == 1)) || defined(__APPLE__) || defined(__ARM_ARCH)
@@ -643,7 +642,7 @@ NAN_METHOD(kawpow) {
 
 	uint32_t header_hash[8];
 	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_hash_buff)), sizeof(header_hash));
-        const uint64_t nonce = _byteswap_uint64(*(reinterpret_cast<const uint64_t*>(Buffer::Data(nonce_buff))));
+        const uint64_t nonce = __builtin_bswap64(*(reinterpret_cast<const uint64_t*>(Buffer::Data(nonce_buff))));
         uint32_t mix_hash[8];
 	memcpy(mix_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(mix_hash_buff)), sizeof(mix_hash));
 
