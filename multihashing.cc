@@ -19,16 +19,23 @@
 #include "crypto/randomx/randomx.h"
 #include "crypto/astrobwt/AstroBWT.h"
 #include "crypto/kawpow/KPHash.h"
+#include "3rdparty/libethash/ethash.h"
 
 extern "C" {
 #include "crypto/randomx/defyx/KangarooTwelve.h"
 #include "crypto/randomx/blake2/blake2.h"
 #include "c29/portable_endian.h" // for htole32/64
 #include "c29/int-util.h"
+
+void ethash_quick_hash(
+	ethash_h256_t* return_hash,
+	ethash_h256_t const* header_hash,
+	const uint64_t nonce,
+	ethash_h256_t const* mix_hash
+);
 }
 
 #include "c29.h"
-#include "3rdparty/libethash/ethash_internal.h"
 
 #if (defined(__AES__) && (__AES__ == 1)) || (defined(__ARM_FEATURE_CRYPTO) && (__ARM_FEATURE_CRYPTO == 1))
   #define SOFT_AES false
