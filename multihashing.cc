@@ -25,10 +25,10 @@ extern "C" {
 #include "crypto/randomx/blake2/blake2.h"
 #include "c29/portable_endian.h" // for htole32/64
 #include "c29/int-util.h"
-#include "3rdparty/libethash/ethash_internal.h"
 }
 
 #include "c29.h"
+#include "3rdparty/libethash/ethash_internal.h"
 
 #if (defined(__AES__) && (__AES__ == 1)) || (defined(__ARM_FEATURE_CRYPTO) && (__ARM_FEATURE_CRYPTO == 1))
   #define SOFT_AES false
