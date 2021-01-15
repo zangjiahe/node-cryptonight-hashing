@@ -679,7 +679,7 @@ NAN_METHOD(ethash) {
 	memcpy(mix_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(mix_hash_buff)), sizeof(mix_hash));
 
         uint32_t output[8];
-	ethash_quick_hash(output, header_hash, nonce, mix_hash);
+	ethash_quick_hash((ethash_h256_t*)output, (ethash_h256_t*)header_hash, nonce, (ethash_h256_t*)mix_hash);
         std::reverse((char*)(&output[0]), (char*)(&output[8]));
 
 	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)output, 32).ToLocalChecked();
