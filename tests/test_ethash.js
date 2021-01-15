@@ -2,9 +2,9 @@
 const multiHashing = require('../build/Release/cryptonight-hashing');
 
 const result = multiHashing.ethash(
-	Buffer.from('dc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae', 'hex'),
-	Buffer.from('689056015818adbe', 'hex'),
-	Buffer.from('4fffe9ae21f1c9e15207b1f472d5bbdd68c9595d461666602f2be20daf5e7843', 'hex')
+	Buffer.from('f5afa3074287b2b33e975468ae613e023e478112530bc19d4187693c13943445', 'hex'),
+	Buffer.from('ff4136b6b6a244ec', 'hex'),
+	Buffer.from('47da5e47804594550791c24331163c1f1fde5bc622170e83515843b2b13dbe14', 'hex')
 );
 
 function reverseBuffer(buff) {
@@ -14,7 +14,7 @@ function reverseBuffer(buff) {
 }
 
 
-if (result !== null && reverseBuffer(result).toString('hex') === 'dc0818cf78f21a8e70579cb46a43643f78291264dda342ae31049421c82d21ae')
+if (result !== null && reverseBuffer(result).toString('hex') === '0000000000095d18875acd4a2c2a5ff476c9acf283b4975d7af8d6c33d119c74')
 	console.log('Ethash test passed');
 else {
 	console.log('Ethash test failed: ' + (result ? result.toString('hex') : result));
