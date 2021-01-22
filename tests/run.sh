@@ -5,7 +5,6 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $DIR
 node test.js || exit 1
 node test_ethash.js || exit 1
-node test_perf_ethash.js
 node test_kawpow.js || exit 1
 node test_astrobwt.js || exit 1
 node test_k12.js || exit 1
@@ -43,6 +42,7 @@ node test_ar2_wrkz.js || exit 1
 node test_perf.js
 node test_perf_xla.js
 node test_perf_kawpow.js
+node test_perf_ethash.js
 node test_perf_astrobwt.js
 node test_perf_k12.js
 node test_perf_light.js
