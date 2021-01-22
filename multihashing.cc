@@ -671,12 +671,12 @@ NAN_METHOD(ethash) {
         if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
         const height = Nan::To<int>(info[2]).FromMaybe(0);
 
-	uint32_t header_hash[8];
+	ethash_h256_t header_hash;
 	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_hash_buff)), sizeof(header_hash));
         const uint64_t nonce = __builtin_bswap64(*(reinterpret_cast<const uint64_t*>(Buffer::Data(nonce_buff))));
 
         ethash_light_t cache = ethash_light_new(height);
-        ethash_return_value_t res = ethash_light_compute(cache, (ethash_h256_t*)header_hash, nonce);
+        ethash_return_value_t res = ethash_light_compute(cache, header_hash, nonce);
         ethash_light_delete(cache);
         std::reverse((char*)&res.result.b[0], (char*)&res.result.b[32]);
 
