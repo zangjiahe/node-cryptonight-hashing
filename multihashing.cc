@@ -669,7 +669,7 @@ NAN_METHOD(ethash) {
 	if (Buffer::Length(nonce_buff) != 8) return THROW_ERROR_EXCEPTION("Argument 2 should be a 8 bytes long buffer object.");
 
         if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
-        const height = Nan::To<int>(info[2]).FromMaybe(0);
+        const int height = Nan::To<int>(info[2]).FromMaybe(0);
 
 	ethash_h256_t header_hash;
 	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_hash_buff)), sizeof(header_hash));
