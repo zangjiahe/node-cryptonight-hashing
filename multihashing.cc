@@ -4,7 +4,6 @@
 #include <stdint.h>
 #include <nan.h>
 #include <stdexcept>
-#include <algorithm>
 
 //#if (defined(__AES__) && (__AES__ == 1)) || defined(__APPLE__) || defined(__ARM_ARCH)
 //#else
@@ -649,7 +648,6 @@ NAN_METHOD(kawpow) {
 
         uint32_t output[8];
 	xmrig::KPHash::verify(header_hash, nonce, mix_hash, output);
-        std::reverse((char*)(&output[0]), (char*)(&output[8]));
 
 	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)output, 32).ToLocalChecked();
 	info.GetReturnValue().Set(returnValue);
@@ -684,9 +682,10 @@ NAN_METHOD(ethash) {
             prev_epoch = epoch;
         }
         ethash_return_value_t res = ethash_light_compute(cache, header_hash, nonce);
-        std::reverse((char*)&res.result.b[0], (char*)&res.result.b[32]);
 
-	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)&res.result.b[0], 32).ToLocalChecked();
+        v8::Local<v8::Array> returnValue = New<v8::Array>(2);
+        Nan::Set(returnValue, 0, Nan::CopyBuffer((char*)&res.result.b[0], 32).ToLocalChecked());
+        Nan::Set(returnValue, 0, Nan::CopyBuffer((char*)&res.mix_hash.b[0], 32).ToLocalChecked());
 	info.GetReturnValue().Set(returnValue);
 }
 
