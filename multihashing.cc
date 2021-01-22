@@ -678,9 +678,9 @@ NAN_METHOD(ethash) {
         ethash_light_t cache = ethash_light_new(height);
         ethash_return_value_t res = ethash_light_compute(cache, (ethash_h256_t*)header_hash, nonce);
         ethash_light_delete(cache);
-        std::reverse(&res.result.b[0], &res.result.b[32]);
+        std::reverse((char*)&res.result.b[0], (char*)&res.result.b[32]);
 
-	v8::Local<v8::Value> returnValue = Nan::CopyBuffer(&res.result.b[0], 32).ToLocalChecked();
+	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)&res.result.b[0], 32).ToLocalChecked();
 	info.GetReturnValue().Set(returnValue);
 }
 
