@@ -675,9 +675,15 @@ NAN_METHOD(ethash) {
 	memcpy(&header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_hash_buff)), sizeof(header_hash));
         const uint64_t nonce = __builtin_bswap64(*(reinterpret_cast<const uint64_t*>(Buffer::Data(nonce_buff))));
 
-        ethash_light_t cache = ethash_light_new(height);
+        static int prev_epoch = 0;
+        static ethash_light_t cache = nullptr;
+        const int epoch = height / ETHASH_EPOCH_LENGTH;
+        if (prev_epoch != epoch) {
+            if (cache) ethash_light_delete(cache);
+            cache = ethash_light_new(height);
+            prev_epoch = epoch;
+        }
         ethash_return_value_t res = ethash_light_compute(cache, header_hash, nonce);
-        ethash_light_delete(cache);
         std::reverse((char*)&res.result.b[0], (char*)&res.result.b[32]);
 
 	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)&res.result.b[0], 32).ToLocalChecked();
