@@ -685,7 +685,7 @@ NAN_METHOD(ethash) {
 
         v8::Local<v8::Array> returnValue = New<v8::Array>(2);
         Nan::Set(returnValue, 0, Nan::CopyBuffer((char*)&res.result.b[0], 32).ToLocalChecked());
-        Nan::Set(returnValue, 0, Nan::CopyBuffer((char*)&res.mix_hash.b[0], 32).ToLocalChecked());
+        Nan::Set(returnValue, 1, Nan::CopyBuffer((char*)&res.mix_hash.b[0], 32).ToLocalChecked());
 	info.GetReturnValue().Set(returnValue);
 }
 
