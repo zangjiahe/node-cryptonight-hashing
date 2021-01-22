@@ -4,7 +4,7 @@ const multiHashing = require('../build/Release/cryptonight-hashing');
 const result = multiHashing.ethash(
 	Buffer.from('f5afa3074287b2b33e975468ae613e023e478112530bc19d4187693c13943445', 'hex'),
 	Buffer.from('ff4136b6b6a244ec', 'hex'),
-	Buffer.from('47da5e47804594550791c24331163c1f1fde5bc622170e83515843b2b13dbe14', 'hex')
+	1257006
 );
 
 function reverseBuffer(buff) {

@@ -26,13 +26,6 @@ extern "C" {
 #include "crypto/randomx/blake2/blake2.h"
 #include "c29/portable_endian.h" // for htole32/64
 #include "c29/int-util.h"
-
-void ethash_quick_hash(
-	ethash_h256_t* return_hash,
-	ethash_h256_t const* header_hash,
-	const uint64_t nonce,
-	ethash_h256_t const* mix_hash
-);
 }
 
 #include "c29.h"
@@ -663,7 +656,7 @@ NAN_METHOD(kawpow) {
 }
 
 NAN_METHOD(ethash) {
-	if (info.Length() != 3) return THROW_ERROR_EXCEPTION("You must provide 3 argument buffers: header hash (32 bytes), nonce (8 bytes), mixhash (32 bytes)");
+	if (info.Length() != 3) return THROW_ERROR_EXCEPTION("You must provide 3 arguments: header hash (32 bytes), nonce (8 bytes), height (integer)");
 
 	v8::Isolate *isolate = v8::Isolate::GetCurrent();
 
@@ -675,19 +668,17 @@ NAN_METHOD(ethash) {
 	if (!Buffer::HasInstance(nonce_buff)) return THROW_ERROR_EXCEPTION("Argument 2 should be a buffer object.");
 	if (Buffer::Length(nonce_buff) != 8) return THROW_ERROR_EXCEPTION("Argument 2 should be a 8 bytes long buffer object.");
 
-	Local<Object> mix_hash_buff = info[2]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
-	if (!Buffer::HasInstance(mix_hash_buff)) return THROW_ERROR_EXCEPTION("Argument 3 should be a buffer object.");
-	if (Buffer::Length(mix_hash_buff) != 32) return THROW_ERROR_EXCEPTION("Argument 3 should be a 8 bytes long buffer object.");
+        if (!info[2]->IsNumber()) return THROW_ERROR_EXCEPTION("Argument 3 should be a number");
+        const height = Nan::To<int>(info[2]).FromMaybe(0);
 
 	uint32_t header_hash[8];
 	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_hash_buff)), sizeof(header_hash));
         const uint64_t nonce = __builtin_bswap64(*(reinterpret_cast<const uint64_t*>(Buffer::Data(nonce_buff))));
-        uint32_t mix_hash[8];
-	memcpy(mix_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(mix_hash_buff)), sizeof(mix_hash));
 
-        uint32_t output[8];
-	ethash_quick_hash((ethash_h256_t*)output, (ethash_h256_t*)header_hash, nonce, (ethash_h256_t*)mix_hash);
-        std::reverse((char*)(&output[0]), (char*)(&output[8]));
+        ethash_light_t cache = ethash_light_new(height);
+        ethash_return_value_t res = ethash_light_compute(cache, (ethash_h256_t*)header_hash, nonce);
+        ethash_light_delete(cache);
+        std::reverse((char*)(&res.result[0]), (char*)(&res.result[8]));
 
 	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)output, 32).ToLocalChecked();
 	info.GetReturnValue().Set(returnValue);
