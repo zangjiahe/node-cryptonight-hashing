@@ -672,7 +672,7 @@ NAN_METHOD(ethash) {
         const int height = Nan::To<int>(info[2]).FromMaybe(0);
 
 	ethash_h256_t header_hash;
-	memcpy(header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_hash_buff)), sizeof(header_hash));
+	memcpy(&header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_hash_buff)), sizeof(header_hash));
         const uint64_t nonce = __builtin_bswap64(*(reinterpret_cast<const uint64_t*>(Buffer::Data(nonce_buff))));
 
         ethash_light_t cache = ethash_light_new(height);
