@@ -680,7 +680,7 @@ NAN_METHOD(ethash) {
         ethash_light_delete(cache);
         std::reverse((char*)(&res.result[0]), (char*)(&res.result[8]));
 
-	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)output, 32).ToLocalChecked();
+	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)res.result, 32).ToLocalChecked();
 	info.GetReturnValue().Set(returnValue);
 }
 
