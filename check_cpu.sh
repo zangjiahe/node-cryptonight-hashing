@@ -22,7 +22,7 @@ check_linux() {
       avx) grep avx /proc/cpuinfo >/dev/null;;
       avx2) grep avx2 /proc/cpuinfo >/dev/null;;
       amd) grep -i amd /proc/cpuinfo >/dev/null;;
-      amdnew) grep -i amd /proc/cpuinfo && test `awk '/cpu family/ && $NF~/^[0-9]*$/ {print $NF}' | head -n1` -ge 23;;
+      amdnew) grep -i amd /proc/cpuinfo && test `awk '/cpu family/ && $NF~/^[0-9]*$/ {print $NF}' /proc/cpuinfo | head -n1` -ge 23;;
       intel) grep -i intel /proc/cpuinfo >/dev/null;;
       sse2) grep sse2 /proc/cpuinfo >/dev/null;;
       ssse3) grep ssse3 /proc/cpuinfo >/dev/null;;
