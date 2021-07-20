@@ -1,5 +1,5 @@
 "use strict";
-const multiHashing = require('../build/Release/cryptonight-hashing');
+const multiHashing = require('cryptonight-hashing');
 
 const extraNonce1 = Buffer.from("9618", 'hex');
 const extraNonce2 = Buffer.from("33e73592d373", 'hex');
