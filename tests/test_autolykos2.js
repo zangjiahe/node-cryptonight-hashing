@@ -15,7 +15,7 @@ function serializeCoinbase(msg, extraNonce1, extraNonce2){
   ]);
 };
 
-const result = multiHashing.autolykos2_test(serializeCoinbase(msg, extraNonce1, extraNonce2), height);
+const result = multiHashing.autolykos2_hash(serializeCoinbase(msg, extraNonce1, extraNonce2), height);
 
 if (result !== null && result.toString('hex') === '10cf53f111fa6236ab59d87a70888fca6bd4d8a9dec816df013b94b91f8e09d8')
 	console.log('autolykos2 test passed');
