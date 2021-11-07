@@ -19,7 +19,7 @@ const N = height => {
     return 2147387550;
   } else {
     let res = NBase;
-    let iterationsNumber = parseInt((height - IncreaseStart) / IncreasePeriodForN) + 1;
+    let iterationsNumber = Math.floor((height - IncreaseStart) / IncreasePeriodForN) + 1;
     for (let i = 0; i < iterationsNumber; i++) {
       res = res / BigInt(100) * BigInt(105);
     }
