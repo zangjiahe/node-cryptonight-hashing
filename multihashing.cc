@@ -19,6 +19,7 @@
 #include "crypto/astrobwt/AstroBWT.h"
 #include "crypto/kawpow/KPHash.h"
 #include "3rdparty/libethash/ethash.h"
+#include "crypto/ghostrider/ghostrider.h"
 
 extern "C" {
 #include "crypto/randomx/panthera/KangarooTwelve.h"
@@ -196,6 +197,9 @@ NAN_METHOD(randomx) {
     info.GetReturnValue().Set(returnValue);
 }
 
+void ghostrider(const unsigned char* data, long unsigned int size, unsigned char* output, cryptonight_ctx** ctx, long unsigned int) {
+    xmrig::ghostrider::hash_octa(data, size, output, ctx, nullptr);
+}
 
 static xmrig::cn_hash_fun get_cn_fn(const int algo) {
   switch (algo) {
@@ -212,6 +216,7 @@ static xmrig::cn_hash_fun get_cn_fn(const int algo) {
     case 15: return FNA(CN_ZLS);
     case 16: return FNA(CN_DOUBLE);
     case 17: return FNA(CN_CCX);
+    case 18: return ghostrider;
     default: return FN(CN_R);
   }
 }

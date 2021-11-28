@@ -767,7 +767,7 @@ void destroy_helper_thread(HelperThread*) {}
 
 void hash_octa(const uint8_t* data, size_t size, uint8_t* output, cryptonight_ctx** ctx, HelperThread*)
 {
-    constexpr uint32_t N = 1;
+    constexpr uint32_t N = 8;
 
     // PrevBlockHash (GhostRider's seed) is stored in bytes [4; 36)
     const uint8_t* seed = data + 4;
