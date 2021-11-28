@@ -60,7 +60,7 @@ const size_t max_mem_size = 20 * 1024 * 1024;
 xmrig::VirtualMemory mem(max_mem_size, true, false, 0, 4096);
 static struct cryptonight_ctx* ctx = nullptr;
 
-const MAXRX = 7;
+const int MAXRX = 7;
 int rx2id(xmrig::Algorithm::Id algo) {
   switch (algo) {
       case xmrig::Algorithm::RX_0:     return 0;
