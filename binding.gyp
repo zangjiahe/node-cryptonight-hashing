@@ -68,7 +68,6 @@
                 '<!@(uname -a | grep "x86_64" >/dev/null && echo "xmrig/3rdparty/argon2/arch/x86_64/lib/argon2-sse2.c" || echo)',
                 '<!@(uname -a | grep "x86_64" >/dev/null && echo "xmrig/3rdparty/argon2/arch/x86_64/lib/argon2-ssse3.c" || echo)',
                 '<!@(uname -a | grep "x86_64" >/dev/null && echo "xmrig/3rdparty/argon2/arch/x86_64/lib/argon2-xop.c" || echo)',
-                '<!@(uname -a | grep "x86_64" >/dev/null && echo "xmrig/3rdparty/argon2/arch/x86_64/lib/cpu-flags.c" || echo)',
                 '<!@(uname -a | grep "x86_64" >/dev/null || echo "xmrig/3rdparty/argon2/arch/generic/lib/argon2-arch.c" || echo)',
 
                 "xmrig/crypto/astrobwt/AstroBWT.cpp",
