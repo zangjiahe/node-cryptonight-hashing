@@ -86,7 +86,8 @@ struct InitCtx {
 
 void init_rx(const uint8_t* seed_hash_data, xmrig::Algorithm::Id algo) {
     bool update_cache = false;
-    int rxid = rx2id(algo);
+    const int rxid = rx2id(algo);
+    assert(rxid < MAXRX);
     if (!rx_cache[rxid]) {
         uint8_t* const pmem = static_cast<uint8_t*>(_mm_malloc(RANDOMX_CACHE_MAX_SIZE, 4096));
         rx_cache[rxid] = randomx_create_cache(static_cast<randomx_flags>(RANDOMX_FLAG_JIT | RANDOMX_FLAG_LARGE_PAGES), pmem);
