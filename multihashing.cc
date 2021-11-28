@@ -286,7 +286,7 @@ NAN_METHOD(cryptonight) {
 
     const xmrig::cn_hash_fun fn = get_cn_fn(algo);
 
-    char output[32];
+    char output[32*8];
     fn(reinterpret_cast<const uint8_t*>(Buffer::Data(target)), Buffer::Length(target), reinterpret_cast<uint8_t*>(output), &ctx, height);
 
     v8::Local<v8::Value> returnValue = Nan::CopyBuffer(output, 32).ToLocalChecked();
