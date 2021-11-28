@@ -1,5 +1,7 @@
 /*
-Copyright (c) 2018-2019, tevador <tevador@gmail.com>
+ * Copyright 2018-2019, tevador    <tevador@gmail.com>
+ * Copyright 2018-2020, SChernykh  <https://github.com/SChernykh>
+ * Copyright 2016-2020 XMRig       <https://github.com/xmrig>, <support@xmrig.com>
 
 All rights reserved.
 
@@ -28,40 +30,11 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #pragma once
 
-#include <new>
-#include <cstdint>
-#include "crypto/randomx/virtual_machine.hpp"
-#include "crypto/randomx/jit_compiler.hpp"
-#include "crypto/randomx/allocator.hpp"
-#include "crypto/randomx/dataset.hpp"
 
-namespace randomx {
+void randomx_set_huge_pages_jit(bool)
+{
+}
 
-	template<int softAes>
-	class CompiledVm : public VmBase<softAes>
-	{
-	public:
-		inline CompiledVm() {}
-		void* operator new(size_t, void* ptr) { return ptr; }
-		void operator delete(void*) {}
-
-		void setDataset(randomx_dataset* dataset) override;
-		void run(void* seed) override;
-
-		using VmBase<softAes>::mem;
-		using VmBase<softAes>::program;
-		using VmBase<softAes>::config;
-		using VmBase<softAes>::reg;
-		using VmBase<softAes>::scratchpad;
-		using VmBase<softAes>::datasetPtr;
-		using VmBase<softAes>::datasetOffset;
-
-	protected:
-		void execute();
-
-		JitCompiler compiler{ true, false };
-	};
-
-	using CompiledVmDefault = CompiledVm<1>;
-	using CompiledVmHardAes = CompiledVm<0>;
+void randomx_set_optimized_dataset_init(int)
+{
 }
