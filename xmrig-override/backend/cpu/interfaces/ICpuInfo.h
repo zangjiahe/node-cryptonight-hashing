@@ -20,7 +20,6 @@
 #define XMRIG_CPUINFO_H
 
 
-#include "backend/cpu/CpuThreads.h"
 #include "base/crypto/Algorithm.h"
 #include "base/tools/Object.h"
 #include "crypto/common/Assembly.h"
@@ -101,7 +100,6 @@ public:
     virtual const char *backend() const                                             = 0;
     virtual const char *brand() const                                               = 0;
     virtual const std::vector<int32_t> &units() const                               = 0;
-    virtual CpuThreads threads(const Algorithm &algorithm, uint32_t limit) const    = 0;
     virtual MsrMod msrMod() const                                                   = 0;
     virtual size_t cores() const                                                    = 0;
     virtual size_t L2() const                                                       = 0;

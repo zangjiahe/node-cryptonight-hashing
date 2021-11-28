@@ -37,7 +37,6 @@ public:
 
 protected:
     const char *backend() const override;
-    CpuThreads threads(const Algorithm &algorithm, uint32_t limit) const override;
 
     inline Arch arch() const override                           { return m_arch; }
     inline Assembly::Id assembly() const override               { return m_assembly; }
