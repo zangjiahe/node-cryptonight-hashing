@@ -23,6 +23,7 @@
 #include "base/crypto/Algorithm.h"
 #include "base/tools/Object.h"
 #include "crypto/common/Assembly.h"
+#include <vector>
 
 
 namespace xmrig {
