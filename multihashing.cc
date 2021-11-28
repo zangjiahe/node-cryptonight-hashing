@@ -198,7 +198,7 @@ NAN_METHOD(randomx) {
 }
 
 void ghostrider(const unsigned char* data, long unsigned int size, unsigned char* output, cryptonight_ctx** ctx, long unsigned int) {
-    xmrig::ghostrider::hash_octa(data, size, output, ctx, nullptr);
+    xmrig::ghostrider::hash(data, size, output, ctx, nullptr);
 }
 
 static xmrig::cn_hash_fun get_cn_fn(const int algo) {
@@ -286,7 +286,7 @@ NAN_METHOD(cryptonight) {
 
     const xmrig::cn_hash_fun fn = get_cn_fn(algo);
 
-    char output[32*8];
+    char output[32];
     fn(reinterpret_cast<const uint8_t*>(Buffer::Data(target)), Buffer::Length(target), reinterpret_cast<uint8_t*>(output), &ctx, height);
 
     v8::Local<v8::Value> returnValue = Nan::CopyBuffer(output, 32).ToLocalChecked();

@@ -97,7 +97,7 @@
                 "xmrig/crypto/ghostrider/sph_simd.c",
                 "xmrig/crypto/ghostrider/sph_skein.c",
                 "xmrig/crypto/ghostrider/sph_whirlpool.c",
-                "xmrig/crypto/ghostrider/ghostrider.cpp",
+                "xmrig-override/crypto/ghostrider/ghostrider.cpp",
 
                 "xmrig-override/crypto/kawpow/KPHash.cpp",
                 "xmrig/3rdparty/libethash/keccakf800.c",
