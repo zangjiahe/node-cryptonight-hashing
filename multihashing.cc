@@ -21,7 +21,7 @@
 #include "3rdparty/libethash/ethash.h"
 
 extern "C" {
-#include "crypto/randomx/defyx/KangarooTwelve.h"
+#include "crypto/randomx/panthera/KangarooTwelve.h"
 #include "crypto/randomx/blake2/blake2.h"
 #include "c29/portable_endian.h" // for htole32/64
 #include "c29/int-util.h"
