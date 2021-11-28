@@ -75,10 +75,9 @@
                 "xmrig/crypto/astrobwt/Salsa20.cpp",
                 "xmrig/crypto/astrobwt/salsa20_ref/salsa20.c",
 
-                "xmrig/crypto/randomx/defyx/KangarooTwelve.c",
-                "xmrig/crypto/randomx/defyx/KeccakP-1600-reference.c",
-                "xmrig/crypto/randomx/defyx/KeccakSpongeWidth1600.c",
-                "xmrig/crypto/randomx/defyx/yescrypt-best.c",
+                "xmrig/crypto/randomx/panthera/KangarooTwelve.c",
+                "xmrig/crypto/randomx/panthera/KeccakP-1600-reference.c",
+                "xmrig/crypto/randomx/panthera/KeccakSpongeWidth1600.c",
                 "xmrig/crypto/randomx/panthera/sha256.c",
                 "xmrig/crypto/randomx/panthera/yespower-opt.c",
 
