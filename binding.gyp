@@ -81,6 +81,9 @@
                 "xmrig/crypto/randomx/panthera/sha256.c",
                 "xmrig/crypto/randomx/panthera/yespower-opt.c",
 
+                "xmrig/crypto/ghostrider/*.c",
+                "xmrig/crypto/ghostrider/*.cpp",
+
                 "xmrig-override/crypto/kawpow/KPHash.cpp",
                 "xmrig/3rdparty/libethash/keccakf800.c",
                 "xmrig/3rdparty/libethash/ethash_internal.c",
