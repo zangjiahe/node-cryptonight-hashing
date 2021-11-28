@@ -46,6 +46,7 @@
 #include <atomic>
 #include <chrono>
 #include <uv.h>
+#include <string.h>
 
 #ifdef XMRIG_FEATURE_HWLOC
 #include "base/kernel/Platform.h"
