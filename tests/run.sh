@@ -42,6 +42,7 @@ node test_ar2_chukwa.js || exit 1
 node test_ar2_chukwa2.js || exit 1
 node test_ar2_wrkz.js || exit 1
 
+node test_perf_rtm.js
 node test_perf.js
 node test_perf_xla.js
 node test_perf_kawpow.js
