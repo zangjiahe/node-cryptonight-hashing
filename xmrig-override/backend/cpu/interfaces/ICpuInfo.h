@@ -24,6 +24,7 @@
 #include "base/tools/Object.h"
 #include "crypto/common/Assembly.h"
 #include <vector>
+#include <assert>
 
 
 namespace xmrig {
