@@ -39,13 +39,13 @@ namespace randomx {
 		Instruction& operator()(int pc) {
 			return programBuffer[pc];
 		}
-		uint32_t getSize() const {
+		uint32_t getSize() {
 			return size;
 		}
 		void setSize(uint32_t val) {
 			size = val;
 		}
-		int getAddressRegister() const {
+		int getAddressRegister() {
 			return addrReg;
 		}
 		void setAddressRegister(int val) {

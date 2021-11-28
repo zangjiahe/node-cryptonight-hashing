@@ -88,12 +88,14 @@ void init_rx(const uint8_t* seed_hash_data, xmrig::Algorithm::Id algo) {
     bool update_cache = false;
     const int rxid = rx2id(algo);
     assert(rxid < MAXRX);
+
+    randomx_set_scratchpad_prefetch_mode(0);
+    randomx_set_huge_pages_jit(false);
+    //randomx_set_optimized_dataset_init(0);
+
     if (!rx_cache[rxid]) {
         uint8_t* const pmem = static_cast<uint8_t*>(_mm_malloc(RANDOMX_CACHE_MAX_SIZE, 4096));
-        rx_cache[rxid] = randomx_create_cache(static_cast<randomx_flags>(RANDOMX_FLAG_JIT | RANDOMX_FLAG_LARGE_PAGES), pmem);
-        if (!rx_cache[rxid]) {
-            rx_cache[rxid] = randomx_create_cache(RANDOMX_FLAG_JIT, pmem);
-        }
+        rx_cache[rxid] = randomx_create_cache(RANDOMX_FLAG_JIT, pmem);
         update_cache = true;
     }
     else if (memcmp(rx_seed_hash[rxid], seed_hash_data, sizeof(rx_seed_hash[0])) != 0) {
@@ -132,15 +134,12 @@ void init_rx(const uint8_t* seed_hash_data, xmrig::Algorithm::Id algo) {
     }
 
     if (!rx_vm[rxid]) {
-        int flags = RANDOMX_FLAG_LARGE_PAGES | RANDOMX_FLAG_JIT;
+        int flags = RANDOMX_FLAG_JIT;
 #if !SOFT_AES
         flags |= RANDOMX_FLAG_HARD_AES;
 #endif
 
         rx_vm[rxid] = randomx_create_vm(static_cast<randomx_flags>(flags), rx_cache[rxid], nullptr, mem.scratchpad(), 0);
-        if (!rx_vm[rxid]) {
-            rx_vm[rxid] = randomx_create_vm(static_cast<randomx_flags>(flags - RANDOMX_FLAG_LARGE_PAGES), rx_cache[rxid], nullptr, mem.scratchpad(), 0);
-        }
     }
 }
 

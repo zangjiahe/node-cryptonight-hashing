@@ -1,7 +1,5 @@
 /*
-Copyright (c) 2018-2020, tevador    <tevador@gmail.com>
-Copyright (c) 2019-2020, SChernykh  <https://github.com/SChernykh>
-Copyright (c) 2019-2020, XMRig      <https://github.com/xmrig>, <support@xmrig.com>
+Copyright (c) 2018-2019, tevador <tevador@gmail.com>
 
 All rights reserved.
 
@@ -38,25 +36,14 @@ namespace randomx {
 	void CompiledLightVm<softAes>::setCache(randomx_cache* cache) {
 		cachePtr = cache;
 		mem.memory = cache->memory;
-
-#		ifdef XMRIG_SECURE_JIT
-		compiler.enableWriting();
-#		endif
-
-		compiler.generateSuperscalarHash(cache->programs);
+		compiler.generateSuperscalarHash(cache->programs, cache->reciprocalCache);
 	}
 
 	template<int softAes>
 	void CompiledLightVm<softAes>::run(void* seed) {
 		VmBase<softAes>::generateProgram(seed);
 		randomx_vm::initialize();
-
-#		ifdef XMRIG_SECURE_JIT
-		compiler.enableWriting();
-#		endif
-
 		compiler.generateProgramLight(program, config, datasetOffset);
-
 		CompiledVm<softAes>::execute();
 	}
 

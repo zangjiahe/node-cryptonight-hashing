@@ -41,7 +41,6 @@ namespace randomx {
 	class CompiledVm : public VmBase<softAes>
 	{
 	public:
-		inline CompiledVm() {}
 		void* operator new(size_t, void* ptr) { return ptr; }
 		void operator delete(void*) {}
 
@@ -59,7 +58,7 @@ namespace randomx {
 	protected:
 		void execute();
 
-		JitCompiler compiler{ true, false };
+		JitCompiler compiler{ true };
 	};
 
 	using CompiledVmDefault = CompiledVm<1>;

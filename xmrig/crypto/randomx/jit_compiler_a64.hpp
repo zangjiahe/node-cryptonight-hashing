@@ -1,7 +1,6 @@
 /*
-Copyright (c) 2018-2020, tevador    <tevador@gmail.com>
-Copyright (c) 2019-2020, SChernykh  <https://github.com/SChernykh>
-Copyright (c) 2019-2020, XMRig      <https://github.com/xmrig>, <support@xmrig.com>
+Copyright (c) 2018-2019, tevador <tevador@gmail.com>
+Copyright (c) 2019, SChernykh    <https://github.com/SChernykh>
 
 All rights reserved.
 
@@ -39,7 +38,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 namespace randomx {
 
 	class Program;
-	struct ProgramConfiguration;
+	class ProgramConfiguration;
 	class SuperscalarProgram;
 	class Instruction;
 
@@ -47,7 +46,7 @@ namespace randomx {
 
 	class JitCompilerA64 {
 	public:
-		explicit JitCompilerA64(bool hugePagesEnable, bool optimizedInitDatasetEnable);
+		explicit JitCompilerA64(bool hugePagesEnable);
 		~JitCompilerA64();
 
 		void prepare() {}
@@ -55,36 +54,20 @@ namespace randomx {
 		void generateProgramLight(Program&, ProgramConfiguration&, uint32_t);
 
 		template<size_t N>
-		void generateSuperscalarHash(SuperscalarProgram(&programs)[N]);
+		void generateSuperscalarHash(SuperscalarProgram(&programs)[N], std::vector<uint64_t> &);
 
 		void generateDatasetInitCode() {}
 
-		inline ProgramFunc *getProgramFunc() const {
-#			ifdef XMRIG_SECURE_JIT
-			enableExecution();
-#			endif
-
-			return reinterpret_cast<ProgramFunc*>(code);
-		}
-
-		DatasetInitFunc* getDatasetInitFunc() const;
+		ProgramFunc* getProgramFunc() { return reinterpret_cast<ProgramFunc*>(code); }
+		DatasetInitFunc* getDatasetInitFunc();
 		uint8_t* getCode() { return code; }
 		size_t getCodeSize();
 
-		void enableWriting() const;
-		void enableExecution() const;
-
 		static InstructionGeneratorA64 engine[256];
-
-	private:
-		const bool hugePages;
-		uint32_t reg_changed_offset[8]{};
-		uint8_t* code = nullptr;
+		uint32_t reg_changed_offset[8];
+		uint8_t* code;
 		uint32_t literalPos;
-		uint32_t num32bitLiterals = 0;
-		size_t allocatedSize = 0;
-
-		void allocate(size_t size);
+		uint32_t num32bitLiterals;
 
 		static void emit32(uint32_t val, uint8_t* code, uint32_t& codePos)
 		{
@@ -107,7 +90,6 @@ namespace randomx {
 		template<uint32_t tmp_reg_fp>
 		void emitMemLoadFP(uint32_t src, Instruction& instr, uint8_t* code, uint32_t& codePos);
 
-	public:
 		void h_IADD_RS(Instruction&, uint32_t&);
 		void h_IADD_M(Instruction&, uint32_t&);
 		void h_ISUB_R(Instruction&, uint32_t&);

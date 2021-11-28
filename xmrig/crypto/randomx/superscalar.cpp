@@ -196,7 +196,7 @@ namespace randomx {
 		int latency_;
 		int resultOp_ = 0;
 		int dstOp_ = 0;
-		int srcOp_ = 0;
+		int srcOp_;
 
 		SuperscalarInstructionInfo(const char* name)
 			: name_(name), type_(SuperscalarInstructionType::INVALID), latency_(0) {}
@@ -282,11 +282,11 @@ namespace randomx {
 			return fetchNextDefault(gen);
 		}
 	private:
-		const char* name_ = nullptr;
-		int index_ = -1;
-		const int* counts_ = nullptr;
-		int opsCount_ = 0;
-		DecoderBuffer() = default;
+		const char* name_;
+		int index_;
+		const int* counts_;
+		int opsCount_;
+		DecoderBuffer() : index_(-1) {}
 		static const DecoderBuffer decodeBuffer484;
 		static const DecoderBuffer decodeBuffer7333;
 		static const DecoderBuffer decodeBuffer3733;
@@ -555,10 +555,10 @@ namespace randomx {
 		const SuperscalarInstructionInfo* info_;
 		int src_ = -1;
 		int dst_ = -1;
-		int mod_ = 0;
-		uint32_t imm32_ = 0;
-		SuperscalarInstructionType opGroup_ = SuperscalarInstructionType::INVALID;
-		int opGroupPar_ = 0;
+		int mod_;
+		uint32_t imm32_;
+		SuperscalarInstructionType opGroup_;
+		int opGroupPar_;
 		bool canReuse_ = false;
 		bool groupParIsSource_ = false;
 
@@ -847,7 +847,7 @@ namespace randomx {
 		}*/
 	}
 
-	void executeSuperscalar(int_reg_t(&r)[8], SuperscalarProgram& prog) {
+	void executeSuperscalar(int_reg_t(&r)[8], SuperscalarProgram& prog, std::vector<uint64_t> *reciprocals) {
 		for (unsigned j = 0; j < prog.getSize(); ++j) {
 			Instruction& instr = prog(j);
 			switch ((SuperscalarInstructionType)instr.opcode)
@@ -884,7 +884,10 @@ namespace randomx {
 				r[instr.dst] = smulh(r[instr.dst], r[instr.src]);
 				break;
 			case SuperscalarInstructionType::IMUL_RCP:
-				r[instr.dst] *= randomx_reciprocal(instr.getImm32());
+				if (reciprocals != nullptr)
+					r[instr.dst] *= (*reciprocals)[instr.getImm32()];
+				else
+					r[instr.dst] *= randomx_reciprocal(instr.getImm32());
 				break;
 			default:
 				UNREACHABLE;
