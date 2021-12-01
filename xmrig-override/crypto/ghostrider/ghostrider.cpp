@@ -18,21 +18,21 @@
 
 
 #include "ghostrider.h"
-#include "crypto/ghostrider/sph_blake.h"
-#include "crypto/ghostrider/sph_bmw.h"
-#include "crypto/ghostrider/sph_groestl.h"
-#include "crypto/ghostrider/sph_jh.h"
-#include "crypto/ghostrider/sph_keccak.h"
-#include "crypto/ghostrider/sph_skein.h"
-#include "crypto/ghostrider/sph_luffa.h"
-#include "crypto/ghostrider/sph_cubehash.h"
-#include "crypto/ghostrider/sph_shavite.h"
-#include "crypto/ghostrider/sph_simd.h"
-#include "crypto/ghostrider/sph_echo.h"
-#include "crypto/ghostrider/sph_hamsi.h"
-#include "crypto/ghostrider/sph_fugue.h"
-#include "crypto/ghostrider/sph_shabal.h"
-#include "crypto/ghostrider/sph_whirlpool.h"
+#include "sph_blake.h"
+#include "sph_bmw.h"
+#include "sph_groestl.h"
+#include "sph_jh.h"
+#include "sph_keccak.h"
+#include "sph_skein.h"
+#include "sph_luffa.h"
+#include "sph_cubehash.h"
+#include "sph_shavite.h"
+#include "sph_simd.h"
+#include "sph_echo.h"
+#include "sph_hamsi.h"
+#include "sph_fugue.h"
+#include "sph_shabal.h"
+#include "sph_whirlpool.h"
 
 #include "base/io/log/Log.h"
 #include "base/io/log/Tags.h"
@@ -46,7 +46,6 @@
 #include <atomic>
 #include <chrono>
 #include <uv.h>
-#include <string.h>
 
 #ifdef XMRIG_FEATURE_HWLOC
 #include "base/kernel/Platform.h"
@@ -539,7 +538,7 @@ void destroy_helper_thread(HelperThread* t)
 }
 
 
-void hash_octa(const uint8_t* data, size_t size, uint8_t* output, cryptonight_ctx** ctx, HelperThread* helper)
+void hash_octa(const uint8_t* data, size_t size, uint8_t* output, cryptonight_ctx** ctx, HelperThread* helper, bool verbose)
 {
     enum { N = 8 };
 
@@ -555,11 +554,13 @@ void hash_octa(const uint8_t* data, size_t size, uint8_t* output, cryptonight_ct
     uint32_t cn_indices[6];
     select_indices(cn_indices, data + 4);
 
-    static uint32_t prev_indices[3];
-    if (memcmp(cn_indices, prev_indices, sizeof(prev_indices)) != 0) {
-        memcpy(prev_indices, cn_indices, sizeof(prev_indices));
-        for (int i = 0; i < 3; ++i) {
-            LOG_INFO("%s GhostRider algo %d: %s", Tags::cpu(), i + 1, cn_names[cn_indices[i]]);
+    if (verbose) {
+        static uint32_t prev_indices[3];
+        if (memcmp(cn_indices, prev_indices, sizeof(prev_indices)) != 0) {
+            memcpy(prev_indices, cn_indices, sizeof(prev_indices));
+            for (int i = 0; i < 3; ++i) {
+                LOG_INFO("%s GhostRider algo %d: %s", Tags::cpu(), i + 1, cn_names[cn_indices[i]]);
+            }
         }
     }
 
@@ -766,7 +767,7 @@ HelperThread* create_helper_thread(int64_t, const std::vector<int64_t>&) { retur
 void destroy_helper_thread(HelperThread*) {}
 
 
-void hash(const uint8_t* data, size_t size, uint8_t* output, cryptonight_ctx** ctx, HelperThread*)
+void hash(const uint8_t* data, size_t size, uint8_t* output, cryptonight_ctx** ctx, HelperThread*, bool verbose)
 {
     constexpr uint32_t N = 1;
 
@@ -785,11 +786,13 @@ void hash(const uint8_t* data, size_t size, uint8_t* output, cryptonight_ctx** c
     uint32_t step[6] = { 4, 4, 1, 2, 4, 4 };
 #endif
 
-    static uint32_t prev_indices[3];
-    if (memcmp(cn_indices, prev_indices, sizeof(prev_indices)) != 0) {
-        memcpy(prev_indices, cn_indices, sizeof(prev_indices));
-        for (int i = 0; i < 3; ++i) {
-            LOG_INFO("%s GhostRider algo %d: %s", Tags::cpu(), i + 1, cn_names[cn_indices[i]]);
+    if (verbose) {
+        static uint32_t prev_indices[3];
+        if (memcmp(cn_indices, prev_indices, sizeof(prev_indices)) != 0) {
+            memcpy(prev_indices, cn_indices, sizeof(prev_indices));
+            for (int i = 0; i < 3; ++i) {
+                LOG_INFO("%s GhostRider algo %d: %s", Tags::cpu(), i + 1, cn_names[cn_indices[i]]);
+            }
         }
     }
 

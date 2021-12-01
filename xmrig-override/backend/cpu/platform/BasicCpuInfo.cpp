@@ -177,6 +177,7 @@ xmrig::BasicCpuInfo::BasicCpuInfo() :
     m_flags.set(FLAG_AES,     has_aes_ni());
     m_flags.set(FLAG_AVX,     has_avx());
     m_flags.set(FLAG_AVX2,    has_avx2());
+    m_flags.set(FLAG_VAES,    has_vaes());
     m_flags.set(FLAG_AVX512F, has_avx512f());
     m_flags.set(FLAG_BMI2,    has_bmi2());
     m_flags.set(FLAG_OSXSAVE, has_osxsave());
