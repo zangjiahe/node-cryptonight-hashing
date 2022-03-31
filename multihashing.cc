@@ -256,6 +256,7 @@ static xmrig::cn_hash_fun get_argon2_fn(const int algo) {
 static xmrig::cn_hash_fun get_astrobwt_fn(const int algo) {
   switch (algo) {
     case 0:  return FN(ASTROBWT_DERO);
+    case 1:  return FN(ASTROBWT_DERO_2);
     default: return FN(ASTROBWT_DERO);
   }
 }
