@@ -7,6 +7,7 @@ node test_rtm.js || exit 1
 node test.js || exit 1
 node test_autolykos2.js || exit 1
 node test_ethash.js || exit 1
+node test_etchash.js || exit 1
 node test_kawpow.js || exit 1
 node test_astrobwt.js || exit 1
 node test_astrobwt2.js || exit 1
