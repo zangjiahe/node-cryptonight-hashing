@@ -697,7 +697,7 @@ NAN_METHOD(ethash) {
         const int epoch = height / ETHASH_EPOCH_LENGTH;
         if (prev_epoch != epoch) {
             if (cache) ethash_light_delete(cache);
-            cache = ethash_light_new(height);
+            cache = ethash_light_new(height, epoch, epoch);
             prev_epoch = epoch;
         }
         ethash_return_value_t res = ethash_light_compute(cache, header_hash, nonce);
@@ -730,10 +730,11 @@ NAN_METHOD(etchash) {
 
         static int prev_epoch = 0;
         static ethash_light_t cache = nullptr;
-        const int epoch = height / ( height >= ETCHASH_EPOCH_HEIGHT ? ETCHASH_EPOCH_LENGTH : ETHASH_EPOCH_LENGTH );
+        const int epoch = (height / ETHASH_EPOCH_LENGTH) - 1;
+        const int epoch2 = height / (height >= ETCHASH_EPOCH_HEIGHT ? ETCHASH_EPOCH_LENGTH : ETHASH_EPOCH_LENGTH);
         if (prev_epoch != epoch) {
             if (cache) ethash_light_delete(cache);
-            cache = ethash_light_new(height);
+            cache = ethash_light_new(height, epoch, epoch2);
             prev_epoch = epoch;
         }
         ethash_return_value_t res = ethash_light_compute(cache, header_hash, nonce);
