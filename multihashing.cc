@@ -730,7 +730,7 @@ NAN_METHOD(etchash) {
 
         static int prev_epoch = 0;
         static ethash_light_t cache = nullptr;
-        const int epoch = (height / ETHASH_EPOCH_LENGTH) - 1;
+        const int epoch  = height / ETHASH_EPOCH_LENGTH;
         const int epoch2 = height / (height >= ETCHASH_EPOCH_HEIGHT ? ETCHASH_EPOCH_LENGTH : ETHASH_EPOCH_LENGTH);
         if (prev_epoch != epoch) {
             if (cache) ethash_light_delete(cache);
