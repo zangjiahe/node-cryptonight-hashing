@@ -390,7 +390,7 @@ fail_free_light:
 	return NULL;
 }
 
-ethash_light_t ethash_light_new(uint64_t block_number, uint64_t epoch_seed, uint64_t epoc2)
+ethash_light_t ethash_light_new(uint64_t block_number, uint64_t epoch_seed, uint64_t epoch)
 {
         ethash_h256_t seedhash = ethash_get_seedhash(epoch_seed);
         ethash_light_t ret;
