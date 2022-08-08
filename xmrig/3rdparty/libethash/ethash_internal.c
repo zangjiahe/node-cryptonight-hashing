@@ -390,13 +390,13 @@ fail_free_light:
 	return NULL;
 }
 
-ethash_light_t ethash_light_new(uint64_t block_number, uint64_t epoch, uint64_t epoch2)
+ethash_light_t ethash_light_new(uint64_t block_number, uint64_t epoch_seed, uint64_t epoc2)
 {
-        ethash_h256_t seedhash = ethash_get_seedhash(epoch);
+        ethash_h256_t seedhash = ethash_get_seedhash(epoch_seed);
         ethash_light_t ret;
-        ret = ethash_light_new_internal(ethash_get_cachesize(epoch2), &seedhash);
+        ret = ethash_light_new_internal(ethash_get_cachesize(epoch), &seedhash);
         ret->block_number = block_number;
-        ret->epoch = epoch2;
+        ret->epoch = epoch;
         return ret;
 }
 

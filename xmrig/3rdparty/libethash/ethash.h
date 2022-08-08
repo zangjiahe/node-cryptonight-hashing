@@ -75,7 +75,7 @@ typedef struct ethash_return_value {
  * @return               Newly allocated ethash_light handler or NULL in case of
  *                       ERRNOMEM or invalid parameters used for @ref ethash_compute_cache_nodes()
  */
-ethash_light_t ethash_light_new(uint64_t block_number, uint64_t epoch, uint64_t epoch2);
+ethash_light_t ethash_light_new(uint64_t block_number, uint64_t epoch_seed, uint64_t epoch);
 /**
  */
 bool ethash_compute_cache_nodes(

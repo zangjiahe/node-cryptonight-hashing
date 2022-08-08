@@ -4,7 +4,7 @@ const multiHashing = require('../build/Release/cryptonight-hashing');
 const result = multiHashing.etchash(
         Buffer.from('053690289a0a9dac132c268d6ffe64ad8e025b74eefa61b51934c57d2a49d9e4', 'hex'),
         Buffer.from('fe09000002a784b0', 'hex'),
-        15628518
+        15658542
 );
 
 if (result !== null && result[0].toString('hex') === '0000000d4899e38dbd9ac5bdc3726e34669986f53af0c60f50c5aa54e7fa4ed0')

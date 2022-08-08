@@ -728,14 +728,15 @@ NAN_METHOD(etchash) {
 	memcpy(&header_hash, reinterpret_cast<const uint8_t*>(Buffer::Data(header_hash_buff)), sizeof(header_hash));
         const uint64_t nonce = __builtin_bswap64(*(reinterpret_cast<const uint64_t*>(Buffer::Data(nonce_buff))));
 
-        static int prev_epoch = 0;
+        static int prev_epoch_seed = 0;
         static ethash_light_t cache = nullptr;
-        const int epoch  = height / ETHASH_EPOCH_LENGTH;
-        const int epoch2 = height / (height >= ETCHASH_EPOCH_HEIGHT ? ETCHASH_EPOCH_LENGTH : ETHASH_EPOCH_LENGTH);
-        if (prev_epoch != epoch) {
+        const epoch_length = height >= ETCHASH_EPOCH_HEIGHT ? ETCHASH_EPOCH_LENGTH : ETHASH_EPOCH_LENGTH;
+        const int epoch       = height / epoch_length;
+        const int epoch_seed  = (epoch * epoch_length + 1) / ETHASH_EPOCH_LENGTH;
+        if (prev_epoch_seed != epoch_seed) {
             if (cache) ethash_light_delete(cache);
-            cache = ethash_light_new(height, epoch, epoch2);
-            prev_epoch = epoch;
+            cache = ethash_light_new(height, epoch_seed, epoch);
+            prev_epoch_seed = epoch_seed;
         }
         ethash_return_value_t res = ethash_light_compute(cache, header_hash, nonce);
 
