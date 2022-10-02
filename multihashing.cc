@@ -5,6 +5,12 @@
 #include <nan.h>
 #include <stdexcept>
 
+if defined(__ARM_ARCH)
+  #define my_malloc(a, b) malloc(a)
+else 
+  #define my_malloc(a, b) _mm_malloc(a, b)
+#endif
+
 //#if (defined(__AES__) && (__AES__ == 1)) || defined(__APPLE__) || defined(__ARM_ARCH)
 //#else
 //#define _mm_aeskeygenassist_si128(a, b) a
@@ -81,7 +87,7 @@ static uint8_t        rx_seed_hash[MAXRX][32] = {};
 
 struct InitCtx {
     InitCtx() {
-        xmrig::CnCtx::create(&ctx, static_cast<uint8_t*>(_mm_malloc(max_mem_size, 4096)), max_mem_size, 1);
+        xmrig::CnCtx::create(&ctx, static_cast<uint8_t*>(my_malloc(max_mem_size, 4096)), max_mem_size, 1);
     }
 } s;
 
@@ -95,7 +101,7 @@ void init_rx(const uint8_t* seed_hash_data, xmrig::Algorithm::Id algo) {
     //randomx_set_optimized_dataset_init(0);
 
     if (!rx_cache[rxid]) {
-        uint8_t* const pmem = static_cast<uint8_t*>(_mm_malloc(RANDOMX_CACHE_MAX_SIZE, 4096));
+        uint8_t* const pmem = static_cast<uint8_t*>(my_malloc(RANDOMX_CACHE_MAX_SIZE, 4096));
         rx_cache[rxid] = randomx_create_cache(RANDOMX_FLAG_JIT, pmem);
         update_cache = true;
     }
