@@ -5,9 +5,9 @@
 #include <nan.h>
 #include <stdexcept>
 
-if defined(__ARM_ARCH)
+#if defined(__ARM_ARCH)
   #define my_malloc(a, b) malloc(a)
-else 
+#else 
   #define my_malloc(a, b) _mm_malloc(a, b)
 #endif
 
