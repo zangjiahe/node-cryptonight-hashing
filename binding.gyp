@@ -106,16 +106,16 @@
 
 
 
-#                 "xmrig/3rdparty/equihashverify/src/blake/blake2-config.h",
-#                 "xmrig/3rdparty/equihashverify/src/blake/blake2-impl.h",
-#                 "xmrig/3rdparty/equihashverify/src/blake/blake2-round.h",
-#                 "xmrig/3rdparty/equihashverify/src/blake/blake2.h",
-#                 "xmrig/3rdparty/equihashverify/src/blake/blake2b-load-sse2.h",
-#                 "xmrig/3rdparty/equihashverify/src/blake/blake2b-load-sse41.h",
-#                 "xmrig/3rdparty/equihashverify/src/blake/blake2b-round.h",
-#                 "xmrig/3rdparty/equihashverify/src/blake/blake2b.cpp",
-#                 "xmrig/3rdparty/equihashverify/src/equi/equi210.cpp",
-#                 "xmrig/3rdparty/equihashverify/src/equi/endian.c",
+                "xmrig/3rdparty/equihashverify/src/blake/blake2-config.h",
+                "xmrig/3rdparty/equihashverify/src/blake/blake2-impl.h",
+                "xmrig/3rdparty/equihashverify/src/blake/blake2-round.h",
+                "xmrig/3rdparty/equihashverify/src/blake/blake2.h",
+                "xmrig/3rdparty/equihashverify/src/blake/blake2b-load-sse2.h",
+                "xmrig/3rdparty/equihashverify/src/blake/blake2b-load-sse41.h",
+                "xmrig/3rdparty/equihashverify/src/blake/blake2b-round.h",
+                "xmrig/3rdparty/equihashverify/src/blake/blake2b.cpp",
+                "xmrig/3rdparty/equihashverify/src/equi/equi210.cpp",
+                "xmrig/3rdparty/equihashverify/src/equi/endian.c",
 
             ],
             "include_dirs": [
