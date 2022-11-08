@@ -103,6 +103,20 @@
                 "xmrig-override/crypto/kawpow/KPHash.cpp",
                 "xmrig/3rdparty/libethash/keccakf800.c",
                 "xmrig/3rdparty/libethash/ethash_internal.c",
+
+
+
+                "xmrig/3rdparty/equihashverifysrc/blake/blake2-config.h",
+                "xmrig/3rdparty/equihashverifysrc/blake/blake2-impl.h",
+                "xmrig/3rdparty/equihashverifysrc/blake/blake2-round.h",
+                "xmrig/3rdparty/equihashverifysrc/blake/blake2.h",
+                "xmrig/3rdparty/equihashverifysrc/blake/blake2b-load-sse2.h",
+                "xmrig/3rdparty/equihashverifysrc/blake/blake2b-load-sse41.h",
+                "xmrig/3rdparty/equihashverifysrc/blake/blake2b-round.h",
+                "xmrig/3rdparty/equihashverifysrc/blake/blake2b.cpp",
+                "xmrig/3rdparty/equihashverifysrc/equi/equi210.cpp",
+                "xmrig/3rdparty/equihashverifysrc/equi/endian.c",
+
             ],
             "include_dirs": [
                 "xmrig-override",
