@@ -754,7 +754,7 @@ NAN_METHOD(etchash) {
 	info.GetReturnValue().Set(returnValue);
 }
 
-#include "node-cryptonight-hashing/xmrig/3rdparty/equihashverify/src/equi/equi210.h"
+#include "/xmrig/3rdparty/equihashverify/src/equi/equi210.h"
 
 NAN_METHOD(Verify) {
   Isolate* isolate = Isolate::GetCurrent();
