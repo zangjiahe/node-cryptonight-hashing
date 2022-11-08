@@ -758,7 +758,8 @@ NAN_METHOD(etchash) {
 
 NAN_METHOD(Verify) {
   Isolate* isolate = Isolate::GetCurrent();
-  HandleScope scope(isolate);
+//  HandleScope scope(isolate);
+  v8::Isolate *isolate = v8::Isolate::GetCurrent();
 
   if (info.Length() < 2) {
  return THROW_ERROR_EXCEPTION("You must provide two arguments.");
