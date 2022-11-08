@@ -133,12 +133,12 @@
                 '<!@(./check_cpu.sh ssse3 && echo -DHAVE_SSSE3 || echo)',
                 '<!@(./check_cpu.sh avx512f && echo -DHAVE_AVX512F || echo)',
                 '<!@(./check_cpu.sh xop && echo -DHAVE_XOP || echo)',
-#                 "-std=gnu11      -fPIC -DNDEBUG -Ofast -fno-fast-math -w"
-                "-std=c11",
-                "-Wl,--whole-archive",
-                "-fPIC",
-                "-Wno-pointer-sign",
-                "-D_GNU_SOURCE"
+                "-std=gnu11      -fPIC -DNDEBUG -Ofast -fno-fast-math -w"
+#                 "-std=c11",
+#                 "-Wl,--whole-archive",
+#                 "-fPIC",
+#                 "-Wno-pointer-sign",
+#                 "-D_GNU_SOURCE"
             ],
             "cflags_cc": [
                 '<!@(uname -a | grep "aarch64" >/dev/null && echo "-march=armv8-a+crypto -flax-vector-conversions -DXMRIG_ARM=1" || (uname -a | grep "armv7" >/dev/null && echo "-mfpu=neon -flax-vector-conversions -DXMRIG_ARM=1" || echo "-march=native -DXMRIG_FEATURE_ASM"))',
