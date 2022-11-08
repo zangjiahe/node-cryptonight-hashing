@@ -27,7 +27,7 @@
 #include "3rdparty/libethash/ethash.h"
 #include "crypto/ghostrider/ghostrider.h"
 
-#include "xmrig/3rdparty/equihashverify/src/equi/equi210.h"
+//#include "xmrig/3rdparty/equihashverify/src/equi/equi210.h"
 
 extern "C" {
 #include "crypto/randomx/panthera/KangarooTwelve.h"
