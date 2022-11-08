@@ -27,7 +27,7 @@
 #include "3rdparty/libethash/ethash.h"
 #include "crypto/ghostrider/ghostrider.h"
 
-#include "xmrig/3rdparty/equihashverify/src/equi/equi210.h"
+//#include "xmrig/3rdparty/equihashverify/src/equi/equi210.h"
 
 extern "C" {
 #include "crypto/randomx/panthera/KangarooTwelve.h"
@@ -755,32 +755,32 @@ NAN_METHOD(etchash) {
 }
 
 
-NAN_METHOD(verify) {
-  Isolate* isolate = Isolate::GetCurrent();
-  HandleScope scope(isolate);
-
-  if (info.Length() < 2) {
- return THROW_ERROR_EXCEPTION("You must provide two arguments.");
-  }
-
-  Local<Object> header = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
-  Local<Object> solution = info[1]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
-
-  if(!node::Buffer::HasInstance(header) || !node::Buffer::HasInstance(solution)) {
-  return THROW_ERROR_EXCEPTION("Arguments should be buffer objects.");
-
-  }
-
-  const char *hdr = node::Buffer::Data(header);
-  const char *soln = node::Buffer::Data(solution);
-
-  int n = 210;
-  int k = 9;
-
-  bool result = verifyEH(hdr, soln, n, k);
-  info.GetReturnValue().Set(result);
-
-}
+//NAN_METHOD(verify) {
+//  Isolate* isolate = Isolate::GetCurrent();
+//  HandleScope scope(isolate);
+//
+//  if (info.Length() < 2) {
+// return THROW_ERROR_EXCEPTION("You must provide two arguments.");
+//  }
+//
+//  Local<Object> header = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
+//  Local<Object> solution = info[1]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
+//
+//  if(!node::Buffer::HasInstance(header) || !node::Buffer::HasInstance(solution)) {
+//  return THROW_ERROR_EXCEPTION("Arguments should be buffer objects.");
+//
+//  }
+//
+//  const char *hdr = node::Buffer::Data(header);
+//  const char *soln = node::Buffer::Data(solution);
+//
+//  int n = 210;
+//  int k = 9;
+//
+//  bool result = verifyEH(hdr, soln, n, k);
+//  info.GetReturnValue().Set(result);
+//
+//}
 
 
 NAN_MODULE_INIT(init) {
@@ -802,7 +802,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("kawpow").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(kawpow)).ToLocalChecked());
     Nan::Set(target, Nan::New("ethash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(ethash)).ToLocalChecked());
     Nan::Set(target, Nan::New("etchash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(etchash)).ToLocalChecked());
-    Nan::Set(target, Nan::New("verify").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(verify)).ToLocalChecked());
+//    Nan::Set(target, Nan::New("verify").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(verify)).ToLocalChecked());
 }
 
 NODE_MODULE(cryptonight, init)
