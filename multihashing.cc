@@ -757,7 +757,7 @@ NAN_METHOD(etchash) {
 #include "xmrig/3rdparty/equihashverify/src/equi/equi210.h"
 
 NAN_METHOD(Verify) {
-  Isolate* isolate = Isolate::GetCurrent();
+//  Isolate* isolate = Isolate::GetCurrent();
 //  HandleScope scope(isolate);
   v8::Isolate *isolate = v8::Isolate::GetCurrent();
 
