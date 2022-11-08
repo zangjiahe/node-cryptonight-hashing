@@ -755,7 +755,7 @@ NAN_METHOD(etchash) {
 }
 
 
-NAN_METHOD(verify) {
+NAN_METHOD(Verify) {
   Isolate* isolate = Isolate::GetCurrent();
   HandleScope scope(isolate);
 
@@ -802,7 +802,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("kawpow").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(kawpow)).ToLocalChecked());
     Nan::Set(target, Nan::New("ethash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(ethash)).ToLocalChecked());
     Nan::Set(target, Nan::New("etchash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(etchash)).ToLocalChecked());
-    Nan::Set(target, Nan::New("verify").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(verify)).ToLocalChecked());
+    Nan::Set(target, Nan::New("Verify").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(Verify)).ToLocalChecked());
 }
 
 NODE_MODULE(cryptonight, init)
