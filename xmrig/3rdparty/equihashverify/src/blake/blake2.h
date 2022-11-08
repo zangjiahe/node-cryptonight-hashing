@@ -27,7 +27,7 @@
 extern "C" {
 #endif
 
-/*  enum blake2s_constant
+  enum blake2s_constant
   {
     BLAKE2S_BLOCKBYTES = 64,
     BLAKE2S_OUTBYTES   = 32,
@@ -149,7 +149,7 @@ extern "C" {
   }
 
 #if defined(__cplusplus)
-}*/
+}
 #endif
 
 #endif
