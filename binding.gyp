@@ -58,6 +58,13 @@
                 '<!@(uname -a | grep "aarch64" >/dev/null && echo "xmrig/crypto/randomx/jit_compiler_a64_static.S" || echo)',
                 '<!@(uname -a | grep "aarch64" >/dev/null && echo "xmrig/crypto/randomx/jit_compiler_a64.cpp" || echo)',
 
+
+                "xmrig/3rdparty/equihash/equihash.cpp",
+                "xmrig/3rdparty/utils/sha256c2.c",
+                "xmrig/3rdparty/utils/sha256c.c",
+
+
+
                 "xmrig/3rdparty/argon2/lib/argon2.c",
                 "xmrig/3rdparty/argon2/lib/core.c",
                 "xmrig/3rdparty/argon2/lib/encoding.c",

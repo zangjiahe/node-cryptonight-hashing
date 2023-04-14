@@ -754,7 +754,53 @@ NAN_METHOD(etchash) {
         Nan::Set(returnValue, 1, Nan::CopyBuffer((char*)&res.mix_hash.b[0], 32).ToLocalChecked());
 	info.GetReturnValue().Set(returnValue);
 }
+// Equihash Algorithm
+NAN_METHOD(equihash) {
 
+  // Handle Main Scope
+  Isolate* isolate = Isolate::GetCurrent();
+  HandleScope scope(isolate);
+
+  // Check Arguments for Errors [1]
+  if (info.Length() < 5)
+    return THROW_ERROR_EXCEPTION("You must provide five arguments.");
+  if (!info[3]->IsInt32() || !info[4]->IsInt32())
+    return THROW_ERROR_EXCEPTION("The fourth and fifth parameters should be equihash parameters (n, k)");
+
+  // Define Passed Parameters
+  Isolate *argsIsolate = info.GetIsolate();
+  Local<Context> context = argsIsolate->GetCurrentContext();
+  Local<Object> header = info[0]->ToObject(context).ToLocalChecked();
+  Local<Object> solution = info[1]->ToObject(context).ToLocalChecked();
+
+  // Check Arguments for Errors [2]
+  if (!Buffer::HasInstance(header) || !Buffer::HasInstance(solution))
+    return THROW_ERROR_EXCEPTION("The first two arguments should be buffer objects");
+  if (!info[2]->IsString())
+    return THROW_ERROR_EXCEPTION("The third argument should be the personalization string");
+
+  // Header Length !== 140
+  const char *hdr = Buffer::Data(header);
+  if (Buffer::Length(header) != 140) {
+    info.GetReturnValue().Set(false);
+    return;
+  }
+  // Process Passed Parameters
+  const char *soln = Buffer::Data(solution);
+  vector<unsigned char> vecSolution(soln, soln + Buffer::Length(solution));
+  Nan::Utf8String str(info[2]);
+  const char* personalizationString = ToCString(str);
+  unsigned int N = info[3].As<Uint32>()->Value();
+  unsigned int K = info[4].As<Uint32>()->Value();
+
+  // Hash Input Data and Check if Valid Solution
+  bool isValid;
+  crypto_generichash_blake2b_state state;
+  EhInitialiseState(N, K, state, personalizationString);
+  crypto_generichash_blake2b_update(&state, (const unsigned char*)hdr, 140);
+  EhIsValidSolution(N, K, state, vecSolution, isValid);
+  info.GetReturnValue().Set(isValid);
+}
 
 NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("cryptonight").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight)).ToLocalChecked());
@@ -775,6 +821,8 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("kawpow").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(kawpow)).ToLocalChecked());
     Nan::Set(target, Nan::New("ethash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(ethash)).ToLocalChecked());
     Nan::Set(target, Nan::New("etchash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(etchash)).ToLocalChecked());
+    Nan::Set(target, Nan::New("equihash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(equihash)).ToLocalChecked());
+
 }
 
 NODE_MODULE(cryptonight, init)
