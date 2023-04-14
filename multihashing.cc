@@ -26,7 +26,7 @@
 #include "crypto/kawpow/KPHash.h"
 #include "3rdparty/libethash/ethash.h"
 #include "crypto/ghostrider/ghostrider.h"
-
+#include "3rdparty/equihash/equihash.h"
 extern "C" {
 #include "crypto/randomx/panthera/KangarooTwelve.h"
 #include "crypto/randomx/blake2/blake2.h"
