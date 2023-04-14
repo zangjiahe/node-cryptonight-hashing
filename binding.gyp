@@ -62,7 +62,9 @@
                 "xmrig/3rdparty/equihash/equihash.cpp",
                 "xmrig/3rdparty/utils/sha256c2.c",
                 "xmrig/3rdparty/utils/sha256c.c",
-
+                "xmrig/3rdparty/utils/lyra2.c",
+                "xmrig/3rdparty/utils/sponge.c",
+                "xmrig/3rdparty/utils/utilstrencodings.cpp",
 
 
                 "xmrig/3rdparty/argon2/lib/argon2.c",
