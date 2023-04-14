@@ -758,9 +758,9 @@ NAN_METHOD(etchash) {
 NAN_METHOD(equihash) {
 
   // Handle Main Scope
-  Isolate* isolate = Isolate::GetCurrent();
-  HandleScope scope(isolate);
-
+  //Isolate* isolate = Isolate::GetCurrent();
+ // HandleScope scope(isolate);
+  v8::Isolate *isolate = v8::Isolate::GetCurrent();
   // Check Arguments for Errors [1]
   if (info.Length() < 5)
     return THROW_ERROR_EXCEPTION("You must provide five arguments.");
