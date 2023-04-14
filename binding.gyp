@@ -60,7 +60,7 @@
 
 
                 "xmrig/3rdparty/equihash/equihash.cpp",
-                "xmrig/3rdparty/utils/sha256c2.c",
+                "xmrig/3rdparty/utils/sha256c2.cpp",
                 "xmrig/3rdparty/utils/sha256c.c",
                 "xmrig/3rdparty/utils/lyra2.c",
                 "xmrig/3rdparty/utils/sponge.c",
