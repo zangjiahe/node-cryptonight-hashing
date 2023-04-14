@@ -2,7 +2,7 @@
     "targets": [
         {
             "target_name": "cryptonight-hashing",
-             'conditions': [
+            "conditions": [
                 ['OS=="mac"', {
                   'xcode_settings': {
                     'GCC_ENABLE_CPP_EXCEPTIONS': 'YES'
