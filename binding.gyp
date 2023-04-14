@@ -89,7 +89,7 @@
                 "xmrig/crypto/randomx/panthera/KangarooTwelve.c",
                 "xmrig/crypto/randomx/panthera/KeccakP-1600-reference.c",
                 "xmrig/crypto/randomx/panthera/KeccakSpongeWidth1600.c",
-                "xmrig/crypto/randomx/panthera/sha256.c",
+
                 "xmrig/crypto/randomx/panthera/yespower-opt.c",
 
                 "xmrig/crypto/ghostrider/sph_blake.c",
@@ -135,7 +135,7 @@
             "cflags_cc": [
                 '<!@(uname -a | grep "aarch64" >/dev/null && echo "-march=armv8-a+crypto -flax-vector-conversions -DXMRIG_ARM=8" || (uname -a | grep "armv7" >/dev/null && echo "-mfpu=neon -flax-vector-conversions -DXMRIG_ARM=7" || echo "-march=native -DXMRIG_FEATURE_ASM"))',
                 '<!@(./check_cpu.sh intel && echo -DCPU_INTEL || (./check_cpu.sh amd && (./check_cpu.sh amdnew && echo -DCPU_AMD || echo -DCPU_AMD_OLD) || echo))',
-                "-std=c++0x -s -fPIC -DNDEBUG -Ofast -fno-fast-math -fexceptions -fno-rtti -Wno-class-memaccess -w"
+                "-std=gnu++11 -s -fPIC -DNDEBUG -Ofast -fno-fast-math -fexceptions -fno-rtti -Wno-class-memaccess -w"
             ],
             'cflags!': [ '-fexceptions' ]
         }
