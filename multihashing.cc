@@ -27,8 +27,6 @@
 #include "3rdparty/libethash/ethash.h"
 #include "crypto/ghostrider/ghostrider.h"
 
-
-
 extern "C" {
 #include "crypto/randomx/panthera/KangarooTwelve.h"
 #include "crypto/randomx/blake2/blake2.h"
@@ -143,7 +141,10 @@ void init_rx(const uint8_t* seed_hash_data, xmrig::Algorithm::Id algo) {
     }
 
     if (!rx_vm[rxid]) {
-        int flags = RANDOMX_FLAG_JIT;
+        int flags = 0;
+#if !defined(__ARM_ARCH)
+        flags |= RANDOMX_FLAG_JIT;
+#endif
 #if !SOFT_AES
         flags |= RANDOMX_FLAG_HARD_AES;
 #endif
@@ -435,7 +436,7 @@ NAN_METHOD(k12) {
 
     v8::Isolate *isolate = v8::Isolate::GetCurrent();
     Local<Object> target = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
-	
+
     if (!Buffer::HasInstance(target)) return THROW_ERROR_EXCEPTION("Argument 1 should be a buffer object.");
 
     char output[32];
@@ -460,19 +461,19 @@ static void c29_setheader(const char *header, const uint32_t headerlen, siphash_
 
 NAN_METHOD(c29s) {
 	if (info.Length() != 2) return THROW_ERROR_EXCEPTION("You must provide 2 arguments: header, ring");
-	
+
 	char * input = Buffer::Data(info[0]);
 	uint32_t input_len = Buffer::Length(info[0]);
 
 	siphash_keys keys;
 	c29_setheader(input,input_len,&keys);
-	
+
 	Local<Array> ring = Local<Array>::Cast(info[1]);
 
 	uint32_t edges[PROOFSIZE];
 	for (uint32_t n = 0; n < PROOFSIZE; n++)
 		edges[n]=ring->Get(Nan::GetCurrentContext(), n).ToLocalChecked()->Uint32Value(Nan::GetCurrentContext()).FromJust();
-	
+
 	int retval = c29s_verify(edges,&keys);
 
 	info.GetReturnValue().Set(Nan::New<Number>(retval));
@@ -480,7 +481,7 @@ NAN_METHOD(c29s) {
 
 NAN_METHOD(c29v) {
 	if (info.Length() != 2) return THROW_ERROR_EXCEPTION("You must provide 2 arguments: header, ring");
-	
+
 	char * input = Buffer::Data(info[0]);
 	uint32_t input_len = Buffer::Length(info[0]);
 
@@ -492,7 +493,7 @@ NAN_METHOD(c29v) {
 	uint32_t edges[PROOFSIZE];
 	for (uint32_t n = 0; n < PROOFSIZE; n++)
 		edges[n]=ring->Get(Nan::GetCurrentContext(), n).ToLocalChecked()->Uint32Value(Nan::GetCurrentContext()).FromJust();
-	
+
 	int retval = c29v_verify(edges,&keys);
 
 	info.GetReturnValue().Set(Nan::New<Number>(retval));
@@ -500,19 +501,19 @@ NAN_METHOD(c29v) {
 
 NAN_METHOD(c29i) {
 	if (info.Length() != 2) return THROW_ERROR_EXCEPTION("You must provide 2 arguments: header, ring");
-	
+
 	char * input = Buffer::Data(info[0]);
 	uint32_t input_len = Buffer::Length(info[0]);
 
 	siphash_keys keys;
 	c29_setheader(input,input_len,&keys);
-	
+
 	Local<Array> ring = Local<Array>::Cast(info[1]);
 
 	uint32_t edges[PROOFSIZEi];
 	for (uint32_t n = 0; n < PROOFSIZEi; n++)
 		edges[n]=ring->Get(Nan::GetCurrentContext(), n).ToLocalChecked()->Uint32Value(Nan::GetCurrentContext()).FromJust();
-	
+
 	int retval = c29i_verify(edges,&keys);
 
 	info.GetReturnValue().Set(Nan::New<Number>(retval));
@@ -520,19 +521,19 @@ NAN_METHOD(c29i) {
 
 NAN_METHOD(c29b) {
 	if (info.Length() != 2) return THROW_ERROR_EXCEPTION("You must provide 2 arguments: header, ring");
-	
+
 	char * input = Buffer::Data(info[0]);
 	uint32_t input_len = Buffer::Length(info[0]);
 
 	siphash_keys keys;
 	c29_setheader(input,input_len,&keys);
-	
+
 	Local<Array> ring = Local<Array>::Cast(info[1]);
 
 	uint32_t edges[PROOFSIZEb];
 	for (uint32_t n = 0; n < PROOFSIZEb; n++)
 		edges[n]=ring->Get(Nan::GetCurrentContext(), n).ToLocalChecked()->Uint32Value(Nan::GetCurrentContext()).FromJust();
-	
+
 	int retval = c29b_verify(edges,&keys);
 
 	info.GetReturnValue().Set(Nan::New<Number>(retval));
@@ -541,7 +542,7 @@ NAN_METHOD(c29b) {
 
 NAN_METHOD(c29_cycle_hash) {
 	if (info.Length() != 1) return THROW_ERROR_EXCEPTION("You must provide 1 argument:ring");
-	
+
 	Local<Array> ring = Local<Array>::Cast(info[0]);
 
 	uint8_t hashdata[116]; // PROOFSIZE*EDGEBITS/8
@@ -554,7 +555,7 @@ NAN_METHOD(c29_cycle_hash) {
 		uint32_t node = ring->Get(Nan::GetCurrentContext(), i).ToLocalChecked()->Uint32Value(Nan::GetCurrentContext()).FromJust();
 
 		for(int j = 0; j < EDGEBITS; j++) {
-			
+
 			if((node >> j) & 1U)
 				hashdata[bytepos] |= 1UL << bitpos;
 
@@ -567,18 +568,18 @@ NAN_METHOD(c29_cycle_hash) {
 
 	unsigned char cyclehash[32];
 	rx_blake2b((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata));
-	
+
 	unsigned char rev_cyclehash[32];
 	for(int i = 0; i < 32; i++)
 		rev_cyclehash[i] = cyclehash[31-i];
-	
+
 	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)rev_cyclehash, 32).ToLocalChecked();
 	info.GetReturnValue().Set(returnValue);
 }
 
 NAN_METHOD(c29b_cycle_hash) {
 	if (info.Length() != 1) return THROW_ERROR_EXCEPTION("You must provide 1 argument:ring");
-	
+
 	Local<Array> ring = Local<Array>::Cast(info[0]);
 
 	uint8_t hashdata[145]; // PROOFSIZEb*EDGEBITS/8
@@ -591,7 +592,7 @@ NAN_METHOD(c29b_cycle_hash) {
 		uint32_t node = ring->Get(Nan::GetCurrentContext(), i).ToLocalChecked()->Uint32Value(Nan::GetCurrentContext()).FromJust();
 
 		for(int j = 0; j < EDGEBITS; j++) {
-			
+
 			if((node >> j) & 1U)
 				hashdata[bytepos] |= 1UL << bitpos;
 
@@ -604,11 +605,11 @@ NAN_METHOD(c29b_cycle_hash) {
 
 	unsigned char cyclehash[32];
 	rx_blake2b((void *)cyclehash, sizeof(cyclehash), (uint8_t *)hashdata, sizeof(hashdata));
-	
+
 	unsigned char rev_cyclehash[32];
 	for(int i = 0; i < 32; i++)
 		rev_cyclehash[i] = cyclehash[31-i];
-	
+
 	v8::Local<v8::Value> returnValue = Nan::CopyBuffer((char*)rev_cyclehash, 32).ToLocalChecked();
 	info.GetReturnValue().Set(returnValue);
 }
@@ -754,36 +755,6 @@ NAN_METHOD(etchash) {
 	info.GetReturnValue().Set(returnValue);
 }
 
-#include "xmrig/3rdparty/equihashverify/src/equi/equi210.h"
-
-NAN_METHOD(Verify) {
-//  Isolate* isolate = Isolate::GetCurrent();
-//  HandleScope scope(isolate);
-  v8::Isolate *isolate = v8::Isolate::GetCurrent();
-
-  if (info.Length() < 2) {
- return THROW_ERROR_EXCEPTION("You must provide two arguments.");
-  }
-
-  Local<Object> header = info[0]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
-  Local<Object> solution = info[1]->ToObject(isolate->GetCurrentContext()).ToLocalChecked();
-
-  if(!node::Buffer::HasInstance(header) || !node::Buffer::HasInstance(solution)) {
-  return THROW_ERROR_EXCEPTION("Arguments should be buffer objects.");
-
-  }
-
-  const char *hdr = node::Buffer::Data(header);
-  const char *soln = node::Buffer::Data(solution);
-
-  int n = 210;
-  int k = 9;
-
-  bool result = verifyEH(hdr, soln, n, k);
-  info.GetReturnValue().Set(result);
-
-}
-
 
 NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("cryptonight").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight)).ToLocalChecked());
@@ -804,7 +775,6 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("kawpow").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(kawpow)).ToLocalChecked());
     Nan::Set(target, Nan::New("ethash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(ethash)).ToLocalChecked());
     Nan::Set(target, Nan::New("etchash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(etchash)).ToLocalChecked());
-    Nan::Set(target, Nan::New("Verify").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(Verify)).ToLocalChecked());
 }
 
 NODE_MODULE(cryptonight, init)
