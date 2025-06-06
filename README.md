@@ -20,6 +20,8 @@ Algorithms
 * Ethash (ETH)
 * Autolykos2 (ERG)
 * Ghostrider (TRM)
+* Equihash
+* SHA3X (XTM)
 
 Installing locally and testing
 -----

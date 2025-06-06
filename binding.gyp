@@ -29,6 +29,7 @@
                 "xmrig/crypto/cn/c_jh.c",
                 "xmrig/crypto/cn/c_skein.c",
                 "xmrig/base/crypto/keccak.cpp",
+                 "xmrig/base/crypto/KeccakHash.cpp",
                 "xmrig/base/crypto/sha3.cpp",
                 "xmrig/crypto/cn/CnCtx.cpp",
                 "xmrig/crypto/cn/CnHash.cpp",

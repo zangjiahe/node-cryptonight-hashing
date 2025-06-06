@@ -7,7 +7,7 @@
 
 #if defined(__ARM_ARCH)
   #define my_malloc(a, b) malloc(a)
-#else 
+#else
   #define my_malloc(a, b) _mm_malloc(a, b)
 #endif
 
@@ -18,7 +18,7 @@
 //#endif
 
 #include "crypto/common/VirtualMemory.h"
-#include "crypto/cn/CnCtx.h" 
+#include "crypto/cn/CnCtx.h"
 #include "crypto/cn/CnHash.h"
 #include "crypto/randomx/configuration.h"
 #include "crypto/randomx/randomx.h"
@@ -27,6 +27,13 @@
 #include "3rdparty/libethash/ethash.h"
 #include "crypto/ghostrider/ghostrider.h"
 #include "3rdparty/equihash/equihash.h"
+#include "base/crypto/KeccakHash.h"
+#include <vector>
+#include <cstdint>
+#include <cstring>
+#include <iomanip>
+#include <sstream>
+#include <endian.h>
 extern "C" {
 #include "crypto/randomx/panthera/KangarooTwelve.h"
 #include "crypto/randomx/blake2/blake2.h"
@@ -271,6 +278,65 @@ static xmrig::cn_hash_fun get_astrobwt_fn(const int algo) {
     default: return FN(ASTROBWT_DERO);
   }
 }
+
+
+/*//////////////////////////////////////////////SHA3X**/
+
+// 将 uint64_t 转换为 LE 字节数组
+std::vector<uint8_t> nonce_to_le_bytes(uint64_t nonce) {
+    std::vector<uint8_t> bytes(8);
+    for (int i = 0; i < 8; ++i) {
+        bytes[i] = (nonce >> (i * 8)) & 0xFF;
+    }
+    return bytes;
+}
+
+// SHA3X 哈希和难度计算
+std::pair<std::vector<uint8_t>, uint64_t> sha3x_difficulty_with_hash(
+    const std::vector<uint8_t>& nonce_bytes,
+    const std::vector<uint8_t>& mining_hash,
+    const std::vector<uint8_t>& pow_bytes) {
+
+    // 第一次哈希
+    KeccakHash hash1;
+    hash1.update(nonce_bytes);
+    hash1.update(mining_hash);
+    hash1.update(pow_bytes);
+    std::vector<uint8_t> first_hash(32);
+    hash1.final(first_hash);
+
+    // 第二次哈希
+    KeccakHash hash2;
+    hash2.update(first_hash);
+    std::vector<uint8_t> second_hash(32);
+    hash2.final(second_hash);
+
+    // 第三次哈希
+    KeccakHash hash3;
+    hash3.update(second_hash);
+    std::vector<uint8_t> third_hash(32);
+    hash3.final(third_hash);
+
+    // 提取难度值（大端解析前 4 字节）
+    uint64_t difficulty = 0;
+    for (int i = 0; i < 4 && i < third_hash.size(); ++i) {
+        difficulty = (difficulty << 8) | third_hash[i];
+    }
+    difficulty = be64toh(difficulty);  // 转换为本地字节序
+
+    return {third_hash, difficulty};
+}
+
+/*//////////////////////////////////////////////SHA3X**/
+
+
+
+
+
+
+
+
+
 
 NAN_METHOD(cryptonight) {
     if (info.Length() < 1) return THROW_ERROR_EXCEPTION("You must provide one argument.");
@@ -803,7 +869,78 @@ NAN_METHOD(equihash) {
   EhIsValidSolution(N, K, state, vecSolution, isValid);
   info.GetReturnValue().Set(isValid);
 }
+//SHA3X
+NAN_METHOD(validateMinerSubmission) {
+    v8::Isolate* isolate = info.GetIsolate();
+    v8::HandleScope scope(isolate); // 保留 HandleScope（虽然新版本可以省略）
 
+    // 参数校验
+    if (info.Length() < 5) {
+        return THROW_ERROR_EXCEPTION("Expected 5 arguments: [nonce_str, result_str, mining_hash_buf, pow_bytes_buf, target_difficulty]");
+    }
+
+    // 提取参数
+    v8::String::Utf8Value nonce_str(isolate, info[0]);
+    v8::String::Utf8Value result_str(isolate, info[1]);
+
+    v8::Local<v8::Object> mining_hash_obj = info[2].As<v8::Object>();
+    v8::Local<v8::Object> pow_bytes_obj = info[3].As<v8::Object>();
+    v8::Local<v8::Value> target_difficulty_val = info[4];
+
+    // 检查 Buffer 类型
+    if (!node::Buffer::HasInstance(mining_hash_obj) || !node::Buffer::HasInstance(pow_bytes_obj)) {
+        return THROW_ERROR_EXCEPTION("mining_hash and pow_bytes must be Buffers");
+    }
+
+    // 检查 target_difficulty 是否为数字
+    if (!target_difficulty_val->IsNumber()) {
+        return THROW_ERROR_EXCEPTION("target_difficulty must be a number");
+    }
+
+    // 解析参数
+    std::string hex_nonce(*nonce_str);
+    std::string hex_result(*result_str);
+
+    // 读取 Buffer 数据
+    std::vector<uint8_t> mining_hash(
+        reinterpret_cast<const uint8_t*>(node::Buffer::Data(mining_hash_obj)),
+        reinterpret_cast<const uint8_t*>(node::Buffer::Data(mining_hash_obj)) +
+            node::Buffer::Length(mining_hash_obj)
+    );
+
+    std::vector<uint8_t> pow_bytes(
+        reinterpret_cast<const uint8_t*>(node::Buffer::Data(pow_bytes_obj)),
+        reinterpret_cast<const uint8_t*>(node::Buffer::Data(pow_bytes_obj)) +
+            node::Buffer::Length(pow_bytes_obj)
+    );
+
+    // 获取 target_difficulty
+    double target_difficulty_double;
+    if (!target_difficulty_val->NumberValue(isolate->GetCurrentContext()).To(&target_difficulty_double)) {
+        return THROW_ERROR_EXCEPTION("target_difficulty must be a number");
+    }
+    uint64_t target_difficulty = static_cast<uint64_t>(target_difficulty_double);
+
+    // 将 hex_nonce 转换为 uint64_t（小端序）
+    uint64_t nonce = 0;
+    sscanf(hex_nonce.c_str(), "%llx", &nonce);
+
+    // 计算哈希和难度
+    auto [hash, difficulty] = sha3x_difficulty_with_hash(nonce_to_le_bytes(nonce), mining_hash, pow_bytes);
+
+    // 验证哈希值是否匹配
+    std::stringstream ss;
+    for (uint8_t b : hash) {
+        ss << std::hex << std::setfill('0') << std::setw(2) << (int)b;
+    }
+    std::string actual_hash_hex = ss.str();
+
+    bool hash_valid = (actual_hash_hex == hex_result);
+    bool difficulty_valid = (difficulty <= target_difficulty);
+
+    // 返回布尔结果
+    info.GetReturnValue().Set(Nan::New(hash_valid && difficulty_valid));
+}
 NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("cryptonight").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight)).ToLocalChecked());
     Nan::Set(target, Nan::New("cryptonight_light").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(cryptonight_light)).ToLocalChecked());
@@ -824,6 +961,7 @@ NAN_MODULE_INIT(init) {
     Nan::Set(target, Nan::New("ethash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(ethash)).ToLocalChecked());
     Nan::Set(target, Nan::New("etchash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(etchash)).ToLocalChecked());
     Nan::Set(target, Nan::New("equihash").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(equihash)).ToLocalChecked());
+    Nan::Set(target, Nan::New("validateMinerSubmission").ToLocalChecked(), Nan::GetFunction(Nan::New<FunctionTemplate>(validateMinerSubmission)).ToLocalChecked());
 
 }
 
